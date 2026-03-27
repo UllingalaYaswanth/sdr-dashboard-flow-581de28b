@@ -11,7 +11,7 @@ const statusFilters: LeadStatus[] = ["hot", "warm", "cold", "new", "done"];
 const typeFilters: LeadType[] = ["B2B", "B2C"];
 const sourceFilters: LeadSource[] = ["apollo", "ads", "upload"];
 
-function StatusBadge({ status, onClick, interactive }: { status: LeadStatus; onClick?: () => void; interactive?: boolean }) {
+function StatusBadge({ status, onClick, interactive }: { status: LeadStatus; onClick?: (e?: any) => void; interactive?: boolean }) {
   const styles: Record<string, string> = {
     hot: "bg-[hsl(var(--badge-hot-bg))] text-[hsl(var(--badge-hot-fg))]",
     warm: "bg-[hsl(var(--badge-warm-bg))] text-[hsl(var(--badge-warm-fg))]",
