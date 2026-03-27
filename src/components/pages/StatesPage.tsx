@@ -1,101 +1,171 @@
+import { useState } from "react";
+import { useLeads } from "@/context/LeadContext";
+import { LeadState } from "@/data/mockData";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { ChevronRight, Calendar, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
-const b2cStates = [
-  { state: "New", desc: "Just entered pipeline", count: 482, badge: "new" },
-  { state: "Interested", desc: "Replied / clicked", count: 241, badge: "warm" },
-  { state: "Counseling", desc: "In conversation", count: 89, badge: "hot" },
-  { state: "Enrolled", desc: "Payment done", count: 67, badge: "done" },
-];
+const b2cFlow: LeadState[] = ["new", "interested", "counseling", "enrolled"];
+const b2bFlow: LeadState[] = ["new", "contacted", "qualified", "meeting", "deal"];
 
-const b2bStates = [
-  { state: "New", desc: "Imported from Apollo", count: 310, badge: "new" },
-  { state: "Contacted", desc: "Email/LinkedIn sent", count: 198, badge: "b2b" },
-  { state: "Qualified", desc: "Replied, budget confirmed", count: 54, badge: "warm" },
-  { state: "Meeting", desc: "Demo/discovery booked", count: 24, badge: "hot" },
-  { state: "Deal", desc: "Proposal sent / closing", count: 8, badge: "done" },
-];
+const stateLabels: Record<LeadState, string> = {
+  new: "New", interested: "Interested", counseling: "Counseling", enrolled: "Enrolled",
+  contacted: "Contacted", qualified: "Qualified", meeting: "Meeting", deal: "Deal",
+};
 
-const b2cMeetings = [
-  { name: "Ravi Kumar", detail: "Demo call — Mar 19, 6 PM", confirmed: true },
-  { name: "Neha Joshi", detail: "Counseling — Mar 20, 11 AM", confirmed: true },
-  { name: "Aryan Verma", detail: "Awaiting slot confirm", confirmed: false },
-];
-
-const b2bMeetings = [
-  { name: "Priya Sharma — Amity", detail: "Discovery — Mar 21, 11 AM", confirmed: true },
-  { name: "Rahul Mehta — UpGrad", detail: "Demo — Mar 22, 3 PM", confirmed: true },
-  { name: "Sneha Iyer — NIIT", detail: "Reschedule pending", confirmed: false },
-];
-
-const stateColors: Record<string, string> = {
-  New: "bg-muted-foreground",
-  Interested: "bg-sdr-orange",
-  Counseling: "bg-sdr-coral",
-  Enrolled: "bg-sdr-green",
-  Contacted: "bg-sdr-blue/60",
-  Qualified: "bg-sdr-orange",
-  Meeting: "bg-sdr-coral",
-  Deal: "bg-sdr-green",
+const stateColors: Record<LeadState, string> = {
+  new: "bg-muted-foreground", interested: "bg-sdr-orange", counseling: "bg-sdr-coral",
+  enrolled: "bg-sdr-green", contacted: "bg-sdr-blue/60", qualified: "bg-sdr-orange",
+  meeting: "bg-sdr-coral", deal: "bg-sdr-green",
 };
 
 const badgeStyles: Record<string, string> = {
   new: "bg-[hsl(var(--badge-new-bg))] text-[hsl(var(--badge-new-fg))]",
-  warm: "bg-[hsl(var(--badge-warm-bg))] text-[hsl(var(--badge-warm-fg))]",
-  hot: "bg-[hsl(var(--badge-hot-bg))] text-[hsl(var(--badge-hot-fg))]",
-  done: "bg-[hsl(var(--badge-done-bg))] text-[hsl(var(--badge-done-fg))]",
-  b2b: "bg-[hsl(var(--badge-b2b-bg))] text-[hsl(var(--badge-b2b-fg))]",
+  interested: "bg-[hsl(var(--badge-warm-bg))] text-[hsl(var(--badge-warm-fg))]",
+  counseling: "bg-[hsl(var(--badge-hot-bg))] text-[hsl(var(--badge-hot-fg))]",
+  enrolled: "bg-[hsl(var(--badge-done-bg))] text-[hsl(var(--badge-done-fg))]",
+  contacted: "bg-[hsl(var(--badge-b2b-bg))] text-[hsl(var(--badge-b2b-fg))]",
+  qualified: "bg-[hsl(var(--badge-warm-bg))] text-[hsl(var(--badge-warm-fg))]",
+  meeting: "bg-[hsl(var(--badge-hot-bg))] text-[hsl(var(--badge-hot-fg))]",
+  deal: "bg-[hsl(var(--badge-done-bg))] text-[hsl(var(--badge-done-fg))]",
 };
 
 export function StatesPage() {
+  const { leads, updateLeadState } = useLeads();
+  const [expandedLead, setExpandedLead] = useState<string | null>(null);
+
+  const b2cLeads = leads.filter(l => l.type === "B2C");
+  const b2bLeads = leads.filter(l => l.type === "B2B");
+
+  const getNextState = (currentState: LeadState, type: "B2B" | "B2C"): LeadState | null => {
+    const flow = type === "B2C" ? b2cFlow : b2bFlow;
+    const idx = flow.indexOf(currentState);
+    if (idx === -1 || idx >= flow.length - 1) return null;
+    return flow[idx + 1];
+  };
+
+  const handleAdvance = (leadId: string, currentState: LeadState, type: "B2B" | "B2C") => {
+    const nextState = getNextState(currentState, type);
+    if (nextState) {
+      updateLeadState(leadId, nextState);
+    }
+  };
+
+  const getStateCounts = (leadsArr: typeof leads, flow: LeadState[]) =>
+    flow.map(state => ({
+      state,
+      count: leadsArr.filter(l => l.state === state).length,
+      leads: leadsArr.filter(l => l.state === state),
+    }));
+
+  const b2cStates = getStateCounts(b2cLeads, b2cFlow);
+  const b2bStates = getStateCounts(b2bLeads, b2bFlow);
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid md:grid-cols-2 gap-3">
       <div>
         <div className="sdr-section-title">B2C state machine — student journey</div>
         <div className="sdr-card mb-3">
-          {b2cStates.map((s) => (
-            <div key={s.state} className="sdr-state-row">
-              <span className={`sdr-state-dot ${stateColors[s.state]}`} />
-              <span className="flex-1 text-sm font-medium">{s.state}</span>
-              <span className="text-xs text-muted-foreground">{s.desc}</span>
-              <Badge variant="secondary" className={`sdr-badge ${badgeStyles[s.badge]}`}>{s.count}</Badge>
+          {b2cStates.map(s => (
+            <div key={s.state}>
+              <div className="sdr-state-row">
+                <span className={`sdr-state-dot ${stateColors[s.state]}`} />
+                <span className="flex-1 text-sm font-medium">{stateLabels[s.state]}</span>
+                <Badge variant="secondary" className={`sdr-badge ${badgeStyles[s.state]}`}>{s.count}</Badge>
+                <button onClick={() => setExpandedLead(expandedLead === `b2c-${s.state}` ? null : `b2c-${s.state}`)}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors ml-1">
+                  {s.count > 0 ? "▾" : ""}
+                </button>
+              </div>
+              {expandedLead === `b2c-${s.state}` && s.leads.length > 0 && (
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="ml-6 mb-2">
+                  {s.leads.map(lead => {
+                    const nextState = getNextState(lead.state, "B2C");
+                    return (
+                      <div key={lead.id} className="flex items-center gap-2 py-1 text-sm">
+                        <span className="flex-1">{lead.name} · Score {lead.score}</span>
+                        {nextState && (
+                          <button
+                            onClick={() => handleAdvance(lead.id, lead.state, "B2C")}
+                            className="flex items-center gap-1 text-xs px-2 py-0.5 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
+                          >
+                            → {stateLabels[nextState]} <ChevronRight className="w-3 h-3" />
+                          </button>
+                        )}
+                        {!nextState && <CheckCircle2 className="w-4 h-4 text-sdr-green" />}
+                      </div>
+                    );
+                  })}
+                </motion.div>
+              )}
             </div>
           ))}
         </div>
-        <div className="sdr-section-title">Meeting system — B2C</div>
+
+        {/* B2C flow visualization */}
         <div className="sdr-card">
-          <div className="text-xs text-muted-foreground mb-2">Auto-booking link sent when state = Counseling + intent ≥ 65</div>
-          {b2cMeetings.map((m) => (
-            <div key={m.name} className="sdr-state-row">
-              <span className={`sdr-state-dot ${m.confirmed ? "bg-sdr-green" : "bg-sdr-orange"}`} />
-              <span className="flex-1 text-sm">{m.name}</span>
-              <span className={`text-xs ${m.confirmed ? "text-sdr-green" : "text-sdr-orange"}`}>{m.detail}</span>
-            </div>
-          ))}
+          <div className="sdr-section-title">B2C flow</div>
+          <div className="flex items-center gap-1 flex-wrap">
+            {b2cFlow.map((state, i) => (
+              <span key={state} className="flex items-center gap-1">
+                <span className={`sdr-flow-node ${badgeStyles[state]}`}>{stateLabels[state]} ({b2cStates[i]?.count || 0})</span>
+                {i < b2cFlow.length - 1 && <span className="text-muted-foreground text-xs">→</span>}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
+
       <div>
         <div className="sdr-section-title">B2B state machine — deal journey</div>
         <div className="sdr-card mb-3">
-          {b2bStates.map((s) => (
-            <div key={s.state} className="sdr-state-row">
-              <span className={`sdr-state-dot ${stateColors[s.state]}`} />
-              <span className="flex-1 text-sm font-medium">{s.state}</span>
-              <span className="text-xs text-muted-foreground">{s.desc}</span>
-              <Badge variant="secondary" className={`sdr-badge ${badgeStyles[s.badge]}`}>{s.count}</Badge>
+          {b2bStates.map(s => (
+            <div key={s.state}>
+              <div className="sdr-state-row">
+                <span className={`sdr-state-dot ${stateColors[s.state]}`} />
+                <span className="flex-1 text-sm font-medium">{stateLabels[s.state]}</span>
+                <Badge variant="secondary" className={`sdr-badge ${badgeStyles[s.state]}`}>{s.count}</Badge>
+                <button onClick={() => setExpandedLead(expandedLead === `b2b-${s.state}` ? null : `b2b-${s.state}`)}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors ml-1">
+                  {s.count > 0 ? "▾" : ""}
+                </button>
+              </div>
+              {expandedLead === `b2b-${s.state}` && s.leads.length > 0 && (
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="ml-6 mb-2">
+                  {s.leads.map(lead => {
+                    const nextState = getNextState(lead.state, "B2B");
+                    return (
+                      <div key={lead.id} className="flex items-center gap-2 py-1 text-sm">
+                        <span className="flex-1">{lead.name} · Score {lead.score}</span>
+                        {nextState && (
+                          <button
+                            onClick={() => handleAdvance(lead.id, lead.state, "B2B")}
+                            className="flex items-center gap-1 text-xs px-2 py-0.5 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
+                          >
+                            → {stateLabels[nextState]} <ChevronRight className="w-3 h-3" />
+                          </button>
+                        )}
+                        {!nextState && <CheckCircle2 className="w-4 h-4 text-sdr-green" />}
+                      </div>
+                    );
+                  })}
+                </motion.div>
+              )}
             </div>
           ))}
         </div>
-        <div className="sdr-section-title">Meeting system — B2B</div>
+
         <div className="sdr-card">
-          <div className="text-xs text-muted-foreground mb-2">Auto-booking when state = Meeting + score ≥ 70. Assigned to enterprise counselor.</div>
-          {b2bMeetings.map((m) => (
-            <div key={m.name} className="sdr-state-row">
-              <span className={`sdr-state-dot ${m.confirmed ? "bg-sdr-green" : "bg-sdr-orange"}`} />
-              <span className="flex-1 text-sm">{m.name}</span>
-              <span className={`text-xs ${m.confirmed ? "text-sdr-green" : "text-sdr-orange"}`}>{m.detail}</span>
-            </div>
-          ))}
+          <div className="sdr-section-title">B2B flow</div>
+          <div className="flex items-center gap-1 flex-wrap">
+            {b2bFlow.map((state, i) => (
+              <span key={state} className="flex items-center gap-1">
+                <span className={`sdr-flow-node ${badgeStyles[state]}`}>{stateLabels[state]} ({b2bStates[i]?.count || 0})</span>
+                {i < b2bFlow.length - 1 && <span className="text-muted-foreground text-xs">→</span>}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </motion.div>
