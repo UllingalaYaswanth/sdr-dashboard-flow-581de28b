@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavPage, navItems, pageTitles } from "@/data/mockData";
-import { OverviewPage } from "@/components/pages/OverviewPage";
+import OverviewPageV2 from "@/components/pages/OverviewPageV2";
 import { CampaignPage } from "@/components/pages/CampaignPage";
 import { PitchPage } from "@/components/pages/PitchPage";
 import { ICPPage } from "@/components/pages/ICPPage";
@@ -12,10 +12,12 @@ import { ConvoPage } from "@/components/pages/ConvoPage";
 import { StatesPage } from "@/components/pages/StatesPage";
 import { AnalyticsPage } from "@/components/pages/AnalyticsPage";
 import { OptimizePage } from "@/components/pages/OptimizePage";
+import LeadFunnelPage from "@/components/pages/LeadFunnelPage";
+import CounselorPage from "@/components/pages/CounselorPage";
 import { Menu, X, Zap, Brain, Bot, ChevronRight } from "lucide-react";
 
 const pageComponents: Record<NavPage, () => JSX.Element> = {
-  overview: OverviewPage,
+  overview: OverviewPageV2,
   campaign: CampaignPage,
   pitch: PitchPage,
   icp: ICPPage,
@@ -27,6 +29,8 @@ const pageComponents: Record<NavPage, () => JSX.Element> = {
   states: StatesPage,
   analytics: AnalyticsPage,
   optimize: OptimizePage,
+  funnel: LeadFunnelPage,
+  counselor: CounselorPage,
 };
 
 const sectionIcons: Record<string, typeof Zap> = {

@@ -90,9 +90,15 @@ export default {
           "purple-light": "hsl(var(--ai-purple-light))",
           green: "hsl(var(--ai-green))",
           "green-light": "hsl(var(--ai-green-light))",
-          orange: "hsl(var(--ai-orange))",
-          red: "hsl(var(--ai-red))",
           teal: "hsl(var(--ai-teal))",
+          red: "hsl(var(--ai-red))",
+        },
+        chart: {
+          purple: "hsl(var(--chart-purple))",
+          green: "hsl(var(--chart-green))",
+          cyan: "hsl(var(--chart-cyan))",
+          orange: "hsl(var(--chart-orange))",
+          red: "hsl(var(--chart-red))",
         },
       },
       borderRadius: {

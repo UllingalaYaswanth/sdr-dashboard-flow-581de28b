@@ -251,6 +251,14 @@ export const sourceBarData = [
   { label: "Client upload", value: 327, pct: 11, color: "bg-sdr-orange" },
 ];
 
+export const counselorPerformance = [
+  { id: 1, name: "Ananya Iyer", calls: 450, enrollments: 200, conversion: 44.4, avgDuration: "24 min", status: "online" },
+  { id: 2, name: "Vikram Singh", calls: 380, enrollments: 165, conversion: 43.4, avgDuration: "26 min", status: "online" },
+  { id: 3, name: "Priya Sharma", calls: 410, enrollments: 160, conversion: 39.0, avgDuration: "25 min", status: "away" },
+  { id: 4, name: "Rahul Mehta", calls: 320, enrollments: 130, conversion: 40.6, avgDuration: "23 min", status: "online" },
+  { id: 5, name: "Neha Joshi", calls: 216, enrollments: 85, conversion: 39.3, avgDuration: "27 min", status: "offline" },
+];
+
 export const funnelSteps = [
   { label: "Total leads", value: 2847, pct: 100, rate: "" },
   { label: "Contacted", value: 2220, pct: 78, rate: "78%" },
@@ -259,11 +267,12 @@ export const funnelSteps = [
   { label: "Converted", value: 91, pct: 3, rate: "3.2%" },
 ];
 
-export type NavPage = "overview" | "campaign" | "pitch" | "icp" | "sources" | "intent" | "queue" | "channels" | "convo" | "states" | "analytics" | "optimize";
+export type NavPage = "overview" | "campaign" | "pitch" | "icp" | "sources" | "intent" | "queue" | "channels" | "convo" | "states" | "analytics" | "optimize" | "funnel" | "counselor";
 
 export const navItems: { key: NavPage; label: string; section: string; color: string }[] = [
   { key: "overview", label: "Command Center", section: "Targeting", color: "bg-[hsl(var(--ai-blue))]" },
   { key: "campaign", label: "Campaigns", section: "Targeting", color: "bg-[hsl(var(--ai-green))]" },
+  /*
   { key: "pitch", label: "AI Pitch Generator", section: "Targeting", color: "bg-[hsl(var(--ai-purple))]" },
   { key: "icp", label: "ICP Intelligence", section: "Targeting", color: "bg-[hsl(var(--ai-teal))]" },
   { key: "sources", label: "Lead Sources", section: "Targeting", color: "bg-[hsl(var(--ai-orange))]" },
@@ -273,7 +282,12 @@ export const navItems: { key: NavPage; label: string; section: string; color: st
   { key: "convo", label: "AI Conversations", section: "Outreach", color: "bg-[hsl(var(--ai-orange))]" },
   { key: "states", label: "Lead Journey", section: "Outreach", color: "bg-[hsl(var(--ai-purple))]" },
   { key: "analytics", label: "Analytics Hub", section: "Intelligence", color: "bg-[hsl(var(--ai-blue-dark))]" },
+  */
+  { key: "funnel", label: "Lead Funnel", section: "Intelligence", color: "bg-[hsl(var(--ai-purple))]" },
+  { key: "counselor", label: "Counselor Perf", section: "Intelligence", color: "bg-[hsl(var(--ai-orange))]" },
+  /*
   { key: "optimize", label: "Self-Learning Loop", section: "Intelligence", color: "bg-[hsl(var(--ai-green))]" },
+  */
 ];
 
 export const pageTitles: Record<NavPage, string> = {
@@ -288,5 +302,7 @@ export const pageTitles: Record<NavPage, string> = {
   convo: "AI Conversation Engine",
   states: "Lead Journey Map",
   analytics: "Analytics Hub",
+  funnel: "Lead Pipeline Funnel",
+  counselor: "Counselor Performance",
   optimize: "Self-Learning Loop",
 };

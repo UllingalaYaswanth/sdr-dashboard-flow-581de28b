@@ -61,6 +61,13 @@
     --ai-teal: 186 68% 45%;
     --ai-teal-light: 186 68% 95%;
 
+    /* Chart Colors */
+    --chart-purple: 260 70% 60%;
+    --chart-green: 152 69% 42%;
+    --chart-cyan: 186 68% 45%;
+    --chart-orange: 28 96% 56%;
+    --chart-red: 4 80% 54%;
+
     /* Status colors */
     --status-hot: 4 80% 54%;
     --status-warm: 28 96% 56%;
@@ -130,6 +137,13 @@
     --sidebar-accent-foreground: 220 20% 90%;
     --sidebar-border: 222 28% 13%;
     --sidebar-ring: 222 89% 62%;
+
+    /* Chart Colors - Dark Mode */
+    --chart-purple: 260 70% 65%;
+    --chart-green: 152 69% 50%;
+    --chart-cyan: 186 68% 55%;
+    --chart-orange: 28 96% 65%;
+    --chart-red: 4 80% 60%;
   }
 }
 
