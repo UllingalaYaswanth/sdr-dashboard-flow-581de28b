@@ -10,10 +10,10 @@ function ICPCard({ icp, leadCount, onEdit }: { icp: ICP; leadCount: number; onEd
   const [details, setDetails] = useState(icp.details);
 
   const colorMap: Record<string, string> = {
-    "sdr-blue": "text-sdr-blue-dark",
-    "sdr-green": "text-sdr-green-dark",
-    "sdr-purple": "text-sdr-purple",
-    "sdr-orange": "text-sdr-orange",
+    "sdr-blue": "text-[hsl(var(--ai-blue))]",
+    "sdr-green": "text-[hsl(var(--ai-green))]",
+    "sdr-purple": "text-[hsl(var(--ai-purple))]",
+    "sdr-orange": "text-[hsl(var(--ai-orange))]",
   };
 
   const handleSave = () => {
@@ -33,8 +33,8 @@ function ICPCard({ icp, leadCount, onEdit }: { icp: ICP; leadCount: number; onEd
             </button>
           ) : (
             <div className="flex gap-0.5">
-              <button onClick={handleSave} className="p-0.5 rounded hover:bg-sdr-green-light"><Check className="w-3 h-3 text-sdr-green" /></button>
-              <button onClick={() => { setDetails(icp.details); setEditing(false); }} className="p-0.5 rounded hover:bg-sdr-coral-light"><X className="w-3 h-3 text-sdr-coral" /></button>
+            <button onClick={handleSave} className="p-0.5 rounded hover:bg-[hsl(var(--badge-done-bg))]"><Check className="w-3 h-3 text-[hsl(var(--ai-green))]" /></button>
+              <button onClick={() => { setDetails(icp.details); setEditing(false); }} className="p-0.5 rounded hover:bg-[hsl(var(--badge-hot-bg))]"><X className="w-3 h-3 text-[hsl(var(--ai-red))]" /></button>
             </div>
           )}
         </div>
@@ -68,7 +68,7 @@ export function ICPPage() {
       <div className="flex gap-1.5 mb-3">
         {(["both", "b2c", "b2b"] as const).map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`sdr-badge cursor-pointer transition-all ${tab === activeTab ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-accent"}`}
+            className={`sdr-badge cursor-pointer transition-all ${tab === activeTab ? "bg-[hsl(var(--ai-blue))] text-white" : "bg-secondary text-muted-foreground hover:bg-accent"}`}
           >
             {tab === "both" ? "Dual mode" : tab.toUpperCase()}
           </button>
@@ -80,7 +80,7 @@ export function ICPPage() {
       <div className={`grid ${activeTab === "both" ? "md:grid-cols-2" : "md:grid-cols-1"} gap-3`}>
         {(activeTab === "both" || activeTab === "b2c") && (
           <div>
-            <div className="sdr-section-title">B2C ICPs — hover to edit</div>
+            <div className="sdr-section-title">B2C ICP Profiles</div>
             <div className="grid grid-cols-2 gap-2">
               {b2cICPs.map(icp => <ICPCard key={icp.name} icp={icp} leadCount={getICPLeadCount(icp.name)} />)}
             </div>
@@ -88,7 +88,7 @@ export function ICPPage() {
         )}
         {(activeTab === "both" || activeTab === "b2b") && (
           <div>
-            <div className="sdr-section-title">B2B ICPs (via Apollo) — hover to edit</div>
+            <div className="sdr-section-title">B2B ICP Profiles (Apollo)</div>
             <div className="grid grid-cols-2 gap-2">
               {b2bICPs.map(icp => <ICPCard key={icp.name} icp={icp} leadCount={getICPLeadCount(icp.name)} />)}
             </div>

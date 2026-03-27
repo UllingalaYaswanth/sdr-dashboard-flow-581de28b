@@ -259,32 +259,34 @@ export const funnelSteps = [
   { label: "Converted", value: 91, pct: 3, rate: "3.2%" },
 ];
 
-export type NavPage = "overview" | "pitch" | "icp" | "sources" | "intent" | "queue" | "channels" | "convo" | "states" | "analytics" | "optimize";
+export type NavPage = "overview" | "campaign" | "pitch" | "icp" | "sources" | "intent" | "queue" | "channels" | "convo" | "states" | "analytics" | "optimize";
 
 export const navItems: { key: NavPage; label: string; section: string; color: string }[] = [
-  { key: "overview", label: "Overview", section: "pipeline", color: "bg-sdr-blue" },
-  { key: "pitch", label: "Pitch engine", section: "pipeline", color: "bg-sdr-purple" },
-  { key: "icp", label: "ICP (dual mode)", section: "pipeline", color: "bg-sdr-teal" },
-  { key: "sources", label: "Lead sources", section: "pipeline", color: "bg-sdr-orange" },
-  { key: "intent", label: "Intent + scoring", section: "pipeline", color: "bg-sdr-coral" },
-  { key: "queue", label: "Priority queue", section: "pipeline", color: "bg-sdr-rose" },
-  { key: "channels", label: "Channels", section: "comms", color: "bg-status-done" },
-  { key: "convo", label: "AI conversations", section: "comms", color: "bg-sdr-orange" },
-  { key: "states", label: "Lead states", section: "comms", color: "bg-muted-foreground" },
-  { key: "analytics", label: "Analytics", section: "results", color: "bg-sdr-blue-dark" },
-  { key: "optimize", label: "Self-optimization", section: "results", color: "bg-sdr-green" },
+  { key: "overview", label: "Command Center", section: "Targeting", color: "bg-[hsl(var(--ai-blue))]" },
+  { key: "campaign", label: "Campaigns", section: "Targeting", color: "bg-[hsl(var(--ai-green))]" },
+  { key: "pitch", label: "AI Pitch Generator", section: "Targeting", color: "bg-[hsl(var(--ai-purple))]" },
+  { key: "icp", label: "ICP Intelligence", section: "Targeting", color: "bg-[hsl(var(--ai-teal))]" },
+  { key: "sources", label: "Lead Sources", section: "Targeting", color: "bg-[hsl(var(--ai-orange))]" },
+  { key: "intent", label: "Intent Radar", section: "Targeting", color: "bg-[hsl(var(--ai-red))]" },
+  { key: "queue", label: "Priority Engine", section: "Outreach", color: "bg-[hsl(var(--ai-blue))]" },
+  { key: "channels", label: "Channel Mix", section: "Outreach", color: "bg-[hsl(var(--ai-green))]" },
+  { key: "convo", label: "AI Conversations", section: "Outreach", color: "bg-[hsl(var(--ai-orange))]" },
+  { key: "states", label: "Lead Journey", section: "Outreach", color: "bg-[hsl(var(--ai-purple))]" },
+  { key: "analytics", label: "Analytics Hub", section: "Intelligence", color: "bg-[hsl(var(--ai-blue-dark))]" },
+  { key: "optimize", label: "Self-Learning Loop", section: "Intelligence", color: "bg-[hsl(var(--ai-green))]" },
 ];
 
 export const pageTitles: Record<NavPage, string> = {
-  overview: "System overview",
-  pitch: "AI pitch engine",
-  icp: "ICP generator — dual mode",
-  sources: "Lead sources + ingestion",
-  intent: "Intent tracking + scoring",
-  queue: "Priority queue",
-  channels: "Channel + language selection",
-  convo: "AI conversation engine",
-  states: "Lead state machine + meetings",
-  analytics: "Conversion analytics",
-  optimize: "Self-optimization loop",
+  overview: "AI Command Center",
+  campaign: "AI Campaign Engine",
+  pitch: "AI Pitch Generator",
+  icp: "ICP Intelligence",
+  sources: "Lead Sources & Ingestion",
+  intent: "Intent Radar & Scoring",
+  queue: "Priority Engine",
+  channels: "Channel Intelligence",
+  convo: "AI Conversation Engine",
+  states: "Lead Journey Map",
+  analytics: "Analytics Hub",
+  optimize: "Self-Learning Loop",
 };

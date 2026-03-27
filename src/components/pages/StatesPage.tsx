@@ -15,9 +15,9 @@ const stateLabels: Record<LeadState, string> = {
 };
 
 const stateColors: Record<LeadState, string> = {
-  new: "bg-muted-foreground", interested: "bg-sdr-orange", counseling: "bg-sdr-coral",
-  enrolled: "bg-sdr-green", contacted: "bg-sdr-blue/60", qualified: "bg-sdr-orange",
-  meeting: "bg-sdr-coral", deal: "bg-sdr-green",
+  new: "bg-muted-foreground", interested: "bg-[hsl(var(--ai-orange))]", counseling: "bg-[hsl(var(--ai-red))]",
+  enrolled: "bg-[hsl(var(--ai-green))]", contacted: "bg-[hsl(var(--ai-blue))]", qualified: "bg-[hsl(var(--ai-orange))]",
+  meeting: "bg-[hsl(var(--ai-red))]", deal: "bg-[hsl(var(--ai-green))]",
 };
 
 const badgeStyles: Record<string, string> = {
@@ -65,7 +65,7 @@ export function StatesPage() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid md:grid-cols-2 gap-3">
       <div>
-        <div className="sdr-section-title">B2C state machine — student journey</div>
+        <div className="sdr-section-title">B2C Lead Journey — Student</div>
         <div className="sdr-card mb-3">
           {b2cStates.map(s => (
             <div key={s.state}>
@@ -88,12 +88,12 @@ export function StatesPage() {
                         {nextState && (
                           <button
                             onClick={() => handleAdvance(lead.id, lead.state, "B2C")}
-                            className="flex items-center gap-1 text-xs px-2 py-0.5 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
+                            className="flex items-center gap-1 text-xs px-2.5 py-1 bg-[hsl(var(--ai-blue))] text-white rounded-lg hover:opacity-90 transition-colors"
                           >
                             → {stateLabels[nextState]} <ChevronRight className="w-3 h-3" />
                           </button>
                         )}
-                        {!nextState && <CheckCircle2 className="w-4 h-4 text-sdr-green" />}
+                        {!nextState && <CheckCircle2 className="w-4 h-4 text-[hsl(var(--ai-green))]" />}
                       </div>
                     );
                   })}
@@ -118,7 +118,7 @@ export function StatesPage() {
       </div>
 
       <div>
-        <div className="sdr-section-title">B2B state machine — deal journey</div>
+        <div className="sdr-section-title">B2B Lead Journey — Deal Pipeline</div>
         <div className="sdr-card mb-3">
           {b2bStates.map(s => (
             <div key={s.state}>
@@ -141,12 +141,12 @@ export function StatesPage() {
                         {nextState && (
                           <button
                             onClick={() => handleAdvance(lead.id, lead.state, "B2B")}
-                            className="flex items-center gap-1 text-xs px-2 py-0.5 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
+                            className="flex items-center gap-1 text-xs px-2.5 py-1 bg-[hsl(var(--ai-blue))] text-white rounded-lg hover:opacity-90 transition-colors"
                           >
                             → {stateLabels[nextState]} <ChevronRight className="w-3 h-3" />
                           </button>
                         )}
-                        {!nextState && <CheckCircle2 className="w-4 h-4 text-sdr-green" />}
+                        {!nextState && <CheckCircle2 className="w-4 h-4 text-[hsl(var(--ai-green))]" />}
                       </div>
                     );
                   })}

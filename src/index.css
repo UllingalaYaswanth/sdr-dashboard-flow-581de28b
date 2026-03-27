@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,124 +6,130 @@
 
 @layer base {
   :root {
-    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
-    --background: 0 0% 99%;
-    --foreground: 220 20% 12%;
+    --background: 220 20% 98%;
+    --foreground: 222 30% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 12%;
+    --card-foreground: 222 30% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 12%;
+    --popover-foreground: 222 30% 10%;
 
-    --primary: 212 65% 37%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 222 89% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 220 20% 12%;
+    --secondary: 220 16% 95%;
+    --secondary-foreground: 222 30% 20%;
 
-    --muted: 210 15% 96%;
-    --muted-foreground: 215 12% 50%;
+    --muted: 220 14% 94%;
+    --muted-foreground: 220 12% 50%;
 
-    --accent: 210 20% 96%;
-    --accent-foreground: 220 20% 12%;
+    --accent: 222 89% 96%;
+    --accent-foreground: 222 89% 35%;
 
-    --destructive: 16 70% 52%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214 20% 92%;
-    --input: 214 20% 92%;
-    --ring: 212 65% 37%;
-    --radius: 0.5rem;
+    --border: 220 18% 90%;
+    --input: 220 18% 90%;
+    --ring: 222 89% 55%;
+    --radius: 0.625rem;
 
-    /* SDR-specific semantic tokens */
-    --sdr-blue: 212 65% 37%;
-    --sdr-blue-light: 210 60% 93%;
-    --sdr-blue-dark: 212 75% 26%;
+    /* AI SDR Color System */
+    --ai-blue: 222 89% 55%;
+    --ai-blue-light: 222 89% 96%;
+    --ai-blue-dark: 222 89% 38%;
+    --ai-blue-glow: 222 89% 55%;
 
-    --sdr-green: 160 55% 37%;
-    --sdr-green-light: 155 50% 93%;
-    --sdr-green-dark: 160 65% 20%;
+    --ai-purple: 260 70% 60%;
+    --ai-purple-light: 260 70% 96%;
+    --ai-purple-dark: 260 70% 40%;
 
-    --sdr-purple: 243 38% 55%;
-    --sdr-purple-light: 243 50% 95%;
+    --ai-green: 152 69% 42%;
+    --ai-green-light: 152 69% 95%;
+    --ai-green-dark: 152 69% 28%;
 
-    --sdr-orange: 34 85% 55%;
-    --sdr-orange-light: 38 80% 93%;
+    --ai-orange: 28 96% 56%;
+    --ai-orange-light: 28 96% 95%;
 
-    --sdr-coral: 16 65% 52%;
-    --sdr-coral-light: 16 80% 95%;
+    --ai-red: 4 80% 54%;
+    --ai-red-light: 4 80% 96%;
 
-    --sdr-teal: 160 40% 60%;
-
-    --sdr-rose: 340 55% 52%;
+    --ai-teal: 186 68% 45%;
+    --ai-teal-light: 186 68% 95%;
 
     /* Status colors */
-    --status-hot: 16 70% 52%;
-    --status-warm: 34 85% 45%;
-    --status-cold: 212 65% 37%;
-    --status-done: 100 50% 30%;
-    --status-new: 40 10% 50%;
+    --status-hot: 4 80% 54%;
+    --status-warm: 28 96% 56%;
+    --status-cold: 222 89% 55%;
+    --status-done: 152 69% 42%;
+    --status-new: 220 12% 55%;
+
+    /* Signal indicators */
+    --signal-high: 152 69% 42%;
+    --signal-medium: 28 96% 56%;
+    --signal-low: 220 12% 65%;
 
     /* Badge backgrounds */
-    --badge-b2b-bg: 210 60% 93%;
-    --badge-b2b-fg: 212 75% 26%;
-    --badge-b2c-bg: 155 50% 93%;
-    --badge-b2c-fg: 160 65% 20%;
-    --badge-hybrid-bg: 243 50% 95%;
-    --badge-hybrid-fg: 243 45% 35%;
-    --badge-hot-bg: 16 80% 95%;
-    --badge-hot-fg: 16 60% 26%;
-    --badge-warm-bg: 38 80% 93%;
-    --badge-warm-fg: 34 70% 20%;
-    --badge-cold-bg: 210 60% 93%;
-    --badge-cold-fg: 212 75% 26%;
-    --badge-done-bg: 100 40% 92%;
-    --badge-done-fg: 100 55% 18%;
-    --badge-new-bg: 40 10% 93%;
-    --badge-new-fg: 40 10% 28%;
+    --badge-b2b-bg: 222 89% 96%;
+    --badge-b2b-fg: 222 89% 38%;
+    --badge-b2c-bg: 260 70% 96%;
+    --badge-b2c-fg: 260 70% 40%;
+    --badge-ai-bg: 222 89% 96%;
+    --badge-ai-fg: 222 89% 38%;
+    --badge-hot-bg: 4 80% 96%;
+    --badge-hot-fg: 4 80% 35%;
+    --badge-warm-bg: 28 96% 95%;
+    --badge-warm-fg: 28 75% 32%;
+    --badge-cold-bg: 222 89% 96%;
+    --badge-cold-fg: 222 89% 38%;
+    --badge-done-bg: 152 69% 95%;
+    --badge-done-fg: 152 69% 28%;
+    --badge-new-bg: 220 14% 94%;
+    --badge-new-fg: 220 12% 38%;
 
     /* Sidebar */
-    --sidebar-background: 210 15% 97%;
-    --sidebar-foreground: 220 10% 35%;
-    --sidebar-primary: 220 20% 12%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 210 15% 94%;
-    --sidebar-accent-foreground: 220 20% 12%;
-    --sidebar-border: 214 15% 92%;
-    --sidebar-ring: 212 65% 37%;
+    --sidebar-background: 222 30% 8%;
+    --sidebar-foreground: 220 20% 75%;
+    --sidebar-primary: 222 89% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 30% 14%;
+    --sidebar-accent-foreground: 220 20% 90%;
+    --sidebar-border: 222 30% 15%;
+    --sidebar-ring: 222 89% 55%;
   }
 
   .dark {
-    --background: 220 20% 7%;
-    --foreground: 210 20% 92%;
-    --card: 220 18% 10%;
-    --card-foreground: 210 20% 92%;
-    --popover: 220 18% 10%;
-    --popover-foreground: 210 20% 92%;
-    --primary: 212 60% 55%;
-    --primary-foreground: 220 20% 7%;
-    --secondary: 220 15% 16%;
-    --secondary-foreground: 210 20% 92%;
-    --muted: 220 15% 16%;
-    --muted-foreground: 215 12% 60%;
-    --accent: 220 15% 16%;
-    --accent-foreground: 210 20% 92%;
-    --destructive: 16 60% 40%;
-    --destructive-foreground: 210 20% 92%;
-    --border: 220 15% 18%;
-    --input: 220 15% 18%;
-    --ring: 212 60% 55%;
-    --sidebar-background: 220 18% 8%;
-    --sidebar-foreground: 210 15% 80%;
-    --sidebar-primary: 212 60% 55%;
+    --background: 222 30% 6%;
+    --foreground: 220 20% 93%;
+    --card: 222 28% 9%;
+    --card-foreground: 220 20% 93%;
+    --popover: 222 28% 9%;
+    --popover-foreground: 220 20% 93%;
+    --primary: 222 89% 62%;
+    --primary-foreground: 222 30% 6%;
+    --secondary: 222 25% 15%;
+    --secondary-foreground: 220 20% 93%;
+    --muted: 222 25% 15%;
+    --muted-foreground: 220 15% 55%;
+    --accent: 222 89% 14%;
+    --accent-foreground: 222 89% 70%;
+    --destructive: 4 70% 45%;
+    --destructive-foreground: 220 20% 93%;
+    --border: 222 25% 18%;
+    --input: 222 25% 18%;
+    --ring: 222 89% 62%;
+    --sidebar-background: 222 30% 5%;
+    --sidebar-foreground: 220 20% 70%;
+    --sidebar-primary: 222 89% 62%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 14%;
-    --sidebar-accent-foreground: 210 15% 80%;
-    --sidebar-border: 220 15% 15%;
-    --sidebar-ring: 212 60% 55%;
+    --sidebar-accent: 222 28% 12%;
+    --sidebar-accent-foreground: 220 20% 90%;
+    --sidebar-border: 222 28% 13%;
+    --sidebar-ring: 222 89% 62%;
   }
 }
 
@@ -133,49 +139,138 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
     font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer components {
+  /* === METRIC CARDS === */
   .sdr-metric-card {
-    @apply bg-secondary rounded-lg p-3;
+    @apply bg-card border border-border rounded-xl p-4 relative overflow-hidden;
   }
 
+  .sdr-metric-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsl(var(--ai-blue) / 0.03), transparent);
+    pointer-events: none;
+  }
+
+  /* === BARS === */
   .sdr-bar {
     @apply h-1.5 bg-border rounded-full overflow-hidden;
   }
 
   .sdr-bar-fill {
-    @apply h-full rounded-full transition-all duration-500;
+    @apply h-full rounded-full transition-all duration-700;
   }
 
+  /* === SECTION TITLES === */
   .sdr-section-title {
-    @apply text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2;
+    @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-1.5;
   }
 
+  /* === CARDS === */
   .sdr-card {
-    @apply bg-card border border-border rounded-lg p-3.5;
+    @apply bg-card border border-border rounded-xl p-4;
   }
 
+  .sdr-card-elevated {
+    @apply bg-card border border-border rounded-xl p-4 shadow-sm;
+  }
+
+  /* === BADGES === */
   .sdr-badge {
-    @apply text-xs px-2.5 py-0.5 rounded-full font-medium;
+    @apply text-[11px] px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
   }
 
+  /* === STATE ROWS === */
   .sdr-state-row {
-    @apply flex items-center gap-2 py-1.5 border-b border-border last:border-b-0 text-sm;
+    @apply flex items-center gap-3 py-2 border-b border-border last:border-b-0;
   }
 
   .sdr-state-dot {
     @apply w-2 h-2 rounded-full flex-shrink-0;
   }
 
+  /* === CONVERSATION BUBBLES === */
   .sdr-convo-bubble {
-    @apply rounded-md p-2.5 text-sm leading-relaxed mb-2;
+    @apply rounded-xl p-3 text-sm leading-relaxed mb-2;
   }
 
+  /* === FLOW NODES === */
   .sdr-flow-node {
-    @apply text-xs px-2.5 py-1 rounded-full border;
+    @apply text-[11px] px-2.5 py-1 rounded-full border font-medium;
   }
+
+  /* === AI PULSE INDICATOR === */
+  .ai-pulse {
+    @apply relative inline-flex;
+  }
+
+  .ai-pulse::before {
+    content: '';
+    @apply absolute inset-0 rounded-full animate-ping opacity-30;
+    background: hsl(var(--ai-green));
+  }
+
+  /* === GRADIENT TEXT === */
+  .ai-gradient-text {
+    background: linear-gradient(135deg, hsl(var(--ai-blue)), hsl(var(--ai-purple)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* === AI ACTIVE INDICATOR === */
+  .ai-live-dot {
+    @apply w-2 h-2 rounded-full bg-[hsl(var(--ai-green))] flex-shrink-0;
+    animation: livePulse 2s ease-in-out infinite;
+  }
+
+  /* === SCORE RING === */
+  .score-ring-high { @apply text-[hsl(var(--ai-green))]; }
+  .score-ring-mid { @apply text-[hsl(var(--ai-orange))]; }
+  .score-ring-low { @apply text-[hsl(var(--ai-red))]; }
+
+  /* === GLASS EFFECT === */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md border border-border/60 rounded-xl;
+  }
+
+  /* === HOT LEAD INDICATOR === */
+  .hot-lead-glow {
+    box-shadow: 0 0 0 1px hsl(var(--ai-red) / 0.2), 0 2px 8px hsl(var(--ai-red) / 0.08);
+  }
+
+  /* === SIGNAL BADGE === */
+  .signal-high { @apply bg-[hsl(var(--ai-green-light))] text-[hsl(var(--ai-green-dark))]; }
+  .signal-medium { @apply bg-[hsl(var(--ai-orange-light))] text-[hsl(var(--ai-orange))]; }
+  .signal-low { @apply bg-[hsl(var(--badge-new-bg))] text-[hsl(var(--badge-new-fg))]; }
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, hsl(var(--ai-blue) / 0.05), transparent);
+  animation: shimmer 2s infinite;
 }

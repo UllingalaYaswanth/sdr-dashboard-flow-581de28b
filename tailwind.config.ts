@@ -12,7 +12,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["'DM Sans'", "system-ui", "sans-serif"],
+        sans: ["'Inter'", "system-ui", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
       },
       colors: {
@@ -81,6 +81,18 @@ export default {
           cold: "hsl(var(--status-cold))",
           done: "hsl(var(--status-done))",
           new: "hsl(var(--status-new))",
+        },
+        ai: {
+          blue: "hsl(var(--ai-blue))",
+          "blue-light": "hsl(var(--ai-blue-light))",
+          "blue-dark": "hsl(var(--ai-blue-dark))",
+          purple: "hsl(var(--ai-purple))",
+          "purple-light": "hsl(var(--ai-purple-light))",
+          green: "hsl(var(--ai-green))",
+          "green-light": "hsl(var(--ai-green-light))",
+          orange: "hsl(var(--ai-orange))",
+          red: "hsl(var(--ai-red))",
+          teal: "hsl(var(--ai-teal))",
         },
       },
       borderRadius: {
