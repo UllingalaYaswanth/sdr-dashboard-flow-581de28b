@@ -34,6 +34,8 @@ export function OverviewPage() {
   const hotCount = leads.filter(l => l.status === "hot").length;
   const warmCount = leads.filter(l => l.status === "warm").length;
   const coldCount = leads.filter(l => l.status === "cold").length;
+  const newCount = leads.filter(l => l.status === "new").length;
+  const doneCount = leads.filter(l => l.status === "done").length;
   const meetingsCount = leads.filter(l => l.state === "meeting" || l.state === "counseling").length;
   const converted = leads.filter(l => l.state === "enrolled" || l.state === "deal").length;
   const convRate = leads.length > 0 ? ((converted / leads.length) * 100).toFixed(1) : "0";
@@ -65,6 +67,17 @@ export function OverviewPage() {
     { name: "Hot", value: hotCount, fill: COLORS.red },
     { name: "Warm", value: warmCount, fill: COLORS.orange },
     { name: "Cold", value: coldCount, fill: COLORS.blue },
+    { name: "New", value: newCount, fill: COLORS.teal },
+    { name: "Done", value: doneCount, fill: COLORS.green },
+  ];
+
+  const stateData = [
+    { name: "New", value: leads.filter(l => l.state === "new").length, color: "hsl(var(--ai-blue))" },
+    { name: "Contacted", value: leads.filter(l => l.state === "contacted").length, color: "hsl(var(--ai-teal))" },
+    { name: "Interested", value: leads.filter(l => l.state === "interested").length, color: "hsl(var(--ai-purple))" },
+    { name: "Qualified", value: leads.filter(l => l.state === "qualified").length, color: "hsl(var(--ai-green))" },
+    { name: "Meeting", value: leads.filter(l => l.state === "meeting").length, color: "hsl(var(--ai-orange))" },
+    { name: "Enrolled", value: leads.filter(l => l.state === "enrolled" || l.state === "deal").length, color: "hsl(var(--ai-red))" },
   ];
 
   const typeData = [
@@ -97,21 +110,24 @@ export function OverviewPage() {
         <div className="sdr-card">
           <div className="sdr-section-title">
             <Target className="w-3.5 h-3.5" />
-            Lead Status
+            Priority Breakdown
           </div>
-          <ResponsiveContainer width="100%" height={180}>
+          <ResponsiveContainer width="100%" height={160}>
             <PieChart>
-              <Pie data={statusData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} dataKey="value" paddingAngle={3}>
+              <Pie data={statusData} cx="50%" cy="50%" innerRadius={35} outerRadius={60} dataKey="value" paddingAngle={2}>
                 {statusData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
               </Pie>
               <Tooltip content={<CustomTooltip />} />
             </PieChart>
           </ResponsiveContainer>
-          <div className="flex justify-around mt-1">
+          <div className="grid grid-cols-2 gap-y-1 gap-x-2 mt-1 px-1">
             {statusData.map(d => (
-              <div key={d.name} className="text-center">
-                <div className="text-xs font-bold" style={{ color: d.fill }}>{d.value}</div>
-                <div className="text-[10px] text-muted-foreground">{d.name}</div>
+              <div key={d.name} className="flex items-center justify-between text-[10px]">
+                <div className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: d.fill }} />
+                  <span className="text-muted-foreground">{d.name}</span>
+                </div>
+                <span className="font-bold">{d.value}</span>
               </div>
             ))}
           </div>
@@ -121,17 +137,31 @@ export function OverviewPage() {
         <div className="sdr-card md:col-span-2">
           <div className="sdr-section-title">
             <Activity className="w-3.5 h-3.5" />
-            Pipeline Funnel
+            Lead Journey States
           </div>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={funnelData} layout="vertical" barSize={14}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
-              <YAxis dataKey="stage" type="category" width={72} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill={COLORS.blue} radius={[0, 6, 6, 0]} background={{ fill: "hsl(var(--secondary))", radius: 6 }} />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {stateData.map((s, i) => (
+              <div key={s.name} className="p-2 rounded-lg bg-secondary/50 border border-border/50">
+                <div className="text-[10px] text-muted-foreground mb-0.5 uppercase tracking-wider font-semibold">{s.name}</div>
+                <div className="flex items-end justify-between">
+                  <span className="text-lg font-bold leading-none" style={{ color: s.color }}>{s.value}</span>
+                  <div className="w-8 h-1 rounded-full opacity-50" style={{ background: s.color }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 h-1.5 bg-secondary rounded-full overflow-hidden flex">
+            {stateData.map((s, i) => (
+              <div 
+                key={i} 
+                style={{ 
+                  width: `${(s.value / leads.length) * 100}%`,
+                  background: s.color 
+                }} 
+                className="h-full first:rounded-l-full last:rounded-r-full border-r border-background/20 last:border-0"
+              />
+            ))}
+          </div>
         </div>
       </div>
 
