@@ -113,9 +113,9 @@ export default function OverviewPageV2() {
       <LeadFunnelPage hideTitle={true} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col">
-          <h3 className="text-lg font-semibold text-foreground mb-6">Campaign Interest Analytics</h3>
-          <div className="flex-1 min-h-[300px]">
+        <div className="rounded-xl border border-border bg-card p-4 shadow-sm flex flex-col">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Campaign Interest Analytics</h3>
+          <div className="flex-1 min-h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={courseInterestData}
@@ -136,13 +136,13 @@ export default function OverviewPageV2() {
                   cursor={{ fill: 'transparent' }}
                   contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }}
                 />
-                <Bar dataKey="leads" fill="hsl(var(--chart-purple))" radius={[0, 4, 4, 0]} barSize={12} name="Leads" />
-                <Bar dataKey="Meetings" fill="hsl(var(--chart-green))" radius={[0, 4, 4, 0]} barSize={12} name="Meetings" />
-                <Legend iconType="square" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: '20px' }} />
+                <Bar dataKey="leads" fill="hsl(var(--chart-purple))" radius={[0, 4, 4, 0]} barSize={10} name="Leads" />
+                <Bar dataKey="Meetings" fill="hsl(var(--chart-green))" radius={[0, 4, 4, 0]} barSize={10} name="Meetings" />
+                <Legend iconType="square" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: '10px' }} />
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="grid grid-cols-5 gap-2 mt-6 pt-6 border-t border-border">
+          <div className="grid grid-cols-5 gap-2 mt-4 pt-4 border-t border-border">
             {courseInterestData.map((course) => (
               <div key={course.name} className="flex flex-col items-center">
                 <span className="text-sm font-bold text-primary">{course.percentage}</span>
@@ -152,10 +152,10 @@ export default function OverviewPageV2() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col">
-          <h3 className="text-lg font-semibold text-foreground mb-6">Lead Source Analytics</h3>
-          <div className="flex flex-1 items-center gap-8">
-            <div className="w-1/2 aspect-square">
+        <div className="rounded-xl border border-border bg-card p-4 shadow-sm flex flex-col">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Lead Source Analytics</h3>
+          <div className="flex flex-1 items-center gap-4">
+            <div className="w-1/2 aspect-square max-w-[180px] mx-auto">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -177,20 +177,20 @@ export default function OverviewPageV2() {
             </div>
             <div className="w-1/2 space-y-3">
               {leadSourceData.map((source) => (
-                <div key={source.name} className="flex items-center justify-between text-sm">
+                <div key={source.name} className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: source.color }} />
-                    <span className="text-foreground">{source.name}</span>
+                    <span className="text-foreground truncate max-w-[80px]">{source.name}</span>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex gap-2">
                     <span className="text-muted-foreground">{source.value.toLocaleString()}</span>
-                    <span className="font-medium text-foreground w-12 text-right">{source.percentage}</span>
+                    <span className="font-medium text-foreground w-10 text-right">{source.percentage}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4 mt-6 p-4 rounded-xl bg-secondary/30 border border-border">
+          <div className="grid grid-cols-3 gap-4 mt-4 p-3 rounded-xl bg-secondary/30 border border-border">
             <div className="flex flex-col items-center text-center">
               <span className="text-lg font-bold text-foreground">1.2s</span>
               <span className="text-[10px] text-muted-foreground">Avg Response</span>
