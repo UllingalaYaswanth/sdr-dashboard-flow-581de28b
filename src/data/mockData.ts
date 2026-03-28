@@ -270,7 +270,7 @@ export const funnelSteps = [
 export type NavPage = "overview" | "campaign" | "pitch" | "icp" | "sources" | "intent" | "queue" | "channels" | "convo" | "states" | "analytics" | "optimize" | "funnel" | "counselor";
 
 export const navItems: { key: NavPage; label: string; section: string; color: string }[] = [
-  { key: "overview", label: "Command Center", section: "Targeting", color: "bg-[hsl(var(--ai-blue))]" },
+  { key: "overview", label: "Overview", section: "Targeting", color: "bg-[hsl(var(--ai-blue))]" },
   { key: "campaign", label: "Campaigns", section: "Targeting", color: "bg-[hsl(var(--ai-green))]" },
   /*
   { key: "pitch", label: "AI Pitch Generator", section: "Targeting", color: "bg-[hsl(var(--ai-purple))]" },

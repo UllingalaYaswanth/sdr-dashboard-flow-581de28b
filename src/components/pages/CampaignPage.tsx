@@ -32,6 +32,7 @@ import {
   Building2,
   MapPin,
   Brain,
+  Activity,
 } from "lucide-react";
 import { toast } from "sonner";
 import LeadProfilePage from "./LeadProfilePage";
@@ -177,9 +178,13 @@ const generateLeads = (inputs: WizardInputs): CampaignLead[] => {
         ? allPools.corporate
         : allPools.default;
 
-  const combined = [...pool, ...extraLeads].slice(0, 12);
+  const basePool = [...pool, ...extraLeads];
+  const combined = Array.from({ length: 40 }).map((_, i) => ({
+    ...basePool[i % basePool.length],
+    name: `${basePool[i % basePool.length].name}${i > basePool.length ? " " + (Math.floor(i / basePool.length) + 1) : ""}`
+  }));
   const groups = ["Tier-1 Institutes", "Corporate L&D Leads", "EdTech Growth Contacts"];
-  const statuses: CampaignLead["status"][] = ["enriching", "searching", "contacted", "replied", "interested", "searching", "contacted", "replied", "enriching", "sending", "interested", "contacted"];
+  const statuses: CampaignLead["status"][] = ["contacted", "replied", "interested", "contacted", "enriching", "searching", "sending"];
 
   const sdrData = {
     qual: ["Qualified Lead", "Target Account", "Persona Fit", "Decision Maker", "Influence", "Champion"],
@@ -683,7 +688,7 @@ export function CampaignPage() {
   const [liveStats, setLiveStats] = useState({ sent: 0, delivered: 0, opened: 0, replied: 0, interested: 0, meetings: 0 });
   const [activityFeed, setActivityFeed] = useState<{ id: number; text: string; time: string; type: string }[]>([]);
   const [statsRunning, setStatsRunning] = useState(false);
-  const [detailView, setDetailView] = useState<"stats" | "leads" | "funnel">("stats");
+  const [detailView, setDetailView] = useState<"leads" | "stats" | "funnel">("stats");
 
   const totalSent = campaigns.reduce((a, c) => a + c.sent, 0);
   const totalOpens = campaigns.reduce((a, c) => a + c.opens, 0);
@@ -740,7 +745,7 @@ export function CampaignPage() {
 
       // Auto-triggering the outreach launch as requested
       setTimeout(() => {
-        handleLaunch();
+        handleLaunch(generated);
       }, 1000);
     }, 2000);
   };
@@ -753,47 +758,78 @@ export function CampaignPage() {
     let tick = 0;
     const interval = setInterval(() => {
       tick++;
-      setLiveStats(prev => ({
-        sent: Math.min(prev.sent + Math.floor(Math.random() * 2 + 1), total),
-        delivered: Math.min(prev.delivered + Math.floor(Math.random() * 2), total),
-        opened: Math.min(prev.opened + (tick % 3 === 0 ? 1 : 0), Math.floor(total * 0.45)),
-        replied: Math.min(prev.replied + (tick % 8 === 0 ? 1 : 0), Math.floor(total * 0.12)),
-        interested: Math.min(prev.interested + (tick % 13 === 0 ? 1 : 0), Math.floor(total * 0.05)),
-        meetings: Math.min(prev.meetings + (tick % 19 === 0 ? 1 : 0), Math.floor(total * 0.025)),
-      }));
+      setLiveStats(prev => {
+        const nextSent = Math.min(prev.sent + Math.floor(Math.random() * 2 + 1), total);
+        return {
+          sent: nextSent,
+          delivered: Math.min(prev.delivered + Math.floor(Math.random() * 2), nextSent),
+          opened: Math.min(prev.opened + (tick % 3 === 0 ? 1 : 0), Math.floor(nextSent * 0.6)),
+          replied: Math.min(prev.replied + (tick % 7 === 0 ? 1 : 0), Math.floor(nextSent * 0.25)),
+          interested: Math.min(prev.interested + (tick % 11 === 0 ? 1 : 0), Math.floor(nextSent * 0.15)),
+          meetings: Math.min(prev.meetings + (tick % 17 === 0 ? 1 : 0), Math.floor(nextSent * 0.08)),
+        };
+      });
       if (feed[tick - 1]) {
         const item = feed[tick - 1];
         const now = new Date();
-        setActivityFeed(prev => [{ id: tick, text: item.text, type: item.type, time: `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}` }, ...prev.slice(0, 14)]);
+        setActivityFeed(prev => [{ id: Date.now() + tick, text: item.text, type: item.type, time: `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}` }, ...prev.slice(0, 14)]);
       }
-      if (tick >= 70) clearInterval(interval);
-    }, 750);
+      if (tick >= 100 || tick >= feed.length + 20) clearInterval(interval);
+    }, 800);
   };
 
-  const handleLaunch = () => {
+  const handleLaunch = (leadsToUse?: CampaignLead[]) => {
+    const activeLeads = leadsToUse || leads;
     setLaunching(true);
     setEmailsVisible(false);
-    let prog = 0;
+    setLaunched(true);
+    setStatsRunning(true);
+    setLaunchProgress(0);
+
     const feedTexts: { text: string; type: string }[] = [
-      ...leads.map(l => ({ text: `${l.name} (${l.company}) — AI SDR found & verified`, type: "searching" })),
-      ...leads.map(l => ({ text: `${l.name} — Enriching profiles from Apollo & LinkedIn`, type: "enriching" })),
-      ...leads.map(l => ({ text: `${l.name} — Initial outreach sent via Email`, type: "sending" })),
-      ...leads.filter((_, i) => i % 2 === 0).map(l => ({ text: `${l.name} — Email opened`, type: "open" })),
-      ...leads.filter((_, i) => i % 3 === 0).map(l => ({ text: `${l.name} — Replied: "Sounds interesting!"`, type: "reply" })),
-      ...leads.filter((_, i) => i % 5 === 0).map(l => ({ text: `${l.name} — Status updated: Interested`, type: "interest" })),
-      ...leads.filter((_, i) => i % 7 === 0).map(l => ({ text: `${l.name} — Demo booked & timing allotted`, type: "meeting" })),
+      ...activeLeads.map(l => ({ text: `${l.name} (${l.company}) — AI SDR found & verified`, type: "searching" })),
+      ...activeLeads.map(l => ({ text: `${l.name} — Enriching profiles from Apollo & LinkedIn`, type: "enriching" })),
+      ...activeLeads.map(l => ({ text: `${l.name} — Initial outreach sent via Email`, type: "sending" })),
+      ...activeLeads.filter((_, i) => i % 2 === 0).map(l => ({ text: `${l.name} — Email opened`, type: "open" })),
+      ...activeLeads.filter((_, i) => i % 3 === 0).map(l => ({ text: `${l.name} — Replied: "Sounds interesting!"`, type: "reply" })),
+      ...activeLeads.filter((_, i) => i % 5 === 0).map(l => ({ text: `${l.name} — Status updated: Interested`, type: "interest" })),
+      ...activeLeads.filter((_, i) => i % 7 === 0).map(l => ({ text: `${l.name} — Demo booked & timing allotted`, type: "meeting" })),
     ].sort(() => Math.random() - 0.5);
+
+    // Pre-populate with first 7 items to match the user's 2nd image immediately
+    const initialFeedCount = 7;
+    const initialItems = feedTexts.slice(0, initialFeedCount);
+    const now = new Date();
+    const prePopulatedFeed = initialItems.map((item, idx) => ({
+      id: 999 - idx,
+      text: item.text,
+      type: item.type,
+      time: `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`
+    }));
+    
+    setActivityFeed(prePopulatedFeed);
+    
+    // Set initial stats based on those items
+    setLiveStats({
+      sent: 12,
+      delivered: 11,
+      opened: 4,
+      replied: 1,
+      interested: 0,
+      meetings: 0,
+    });
+
+    startLiveStats(activeLeads.length, feedTexts.slice(initialFeedCount));
+
+    let prog = 0;
     const iv = setInterval(() => {
       prog += Math.random() * 16 + 5;
       if (prog >= 100) {
         clearInterval(iv);
         setLaunchProgress(100);
         setLaunching(false);
-        setLaunched(true);
         const channels = campaignInputs?.channels || ["email"];
         toast.success(`Campaign launched! AI is auto-sending outreach via ${channels.join(" & ")} ✨`);
-        setStatsRunning(true);
-        startLiveStats(leads.length, feedTexts);
       } else {
         setLaunchProgress(Math.min(prog, 100));
       }
@@ -864,6 +900,25 @@ export function CampaignPage() {
                         // In a real app we'd fetch leads for this specific campaign
                         const mockLeads = generateLeads({ courseName: "AI EdTech Growth", targetAudience: c.target } as any);
                         setLeads(mockLeads);
+                        
+                        if (c.status === "running") {
+                          setLaunched(true);
+                          setStatsRunning(true);
+                          setLiveStats({
+                            sent: c.sent,
+                            delivered: Math.floor(c.sent * 0.98),
+                            opened: c.opens,
+                            replied: c.replies,
+                            interested: c.interested,
+                            meetings: Math.floor(c.interested * 0.6)
+                          });
+                          // Inject some initial feed items
+                          const syncedFeed = mockLeads.slice(0, 5).map(l => ({ text: `${l.name} (${l.company}) — Historical activity synced`, type: "enriching" }));
+                          startLiveStats(c.sent + 25, syncedFeed);
+                        } else {
+                          setLaunched(false);
+                          setStatsRunning(false);
+                        }
                       }}
                       className="sdr-card cursor-pointer transition-all hover:shadow-md hover:ring-2 ring-[hsl(var(--ai-blue)/0.3)]"
                     >
@@ -931,7 +986,7 @@ export function CampaignPage() {
                           : "text-muted-foreground hover:bg-secondary"
                       }`}
                     >
-                      Live Strategy
+                      Live Stats
                     </button>
                     <button
                       onClick={() => setDetailView("leads")}
@@ -961,130 +1016,10 @@ export function CampaignPage() {
                 </div>
               </div>
 
-              {/* ── Live Stats Dashboard (Tab 1: stats) ── */}
-              {detailView === "stats" && (
-                <AnimatePresence mode="wait">
-                  {(launched || activeCampaign?.status === "running") ? (
-                    <motion.div key="live-stats" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
-                      <div className="sdr-section-title">
-                        <Zap className="w-3.5 h-3.5" style={{ color: "hsl(var(--ai-green))" }} />
-                        Live Campaign Stats
-                        <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
-                          className="text-[10px] rounded-full px-2 py-0.5 font-semibold" style={{ background: "hsl(var(--badge-done-bg))", color: "hsl(var(--badge-done-fg))" }}>
-                          ● LIVE
-                        </motion.span>
-                      </div>
 
-                      <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-                        {[
-                          { label: "Sent", val: (launched ? liveStats.sent : activeCampaign?.sent) || 0, total: leads.length || 1, color: "hsl(var(--ai-blue))", icon: Send },
-                          { label: "Delivered", val: (launched ? liveStats.delivered : Math.floor((activeCampaign?.sent || 0) * 0.98)) || 0, total: leads.length || 1, color: "hsl(var(--ai-teal))", icon: CheckCircle2 },
-                          { label: "Opened", val: (launched ? liveStats.opened : activeCampaign?.opens) || 0, total: leads.length || 1, color: "hsl(var(--ai-purple))", icon: MailOpen },
-                          { label: "Replied", val: (launched ? liveStats.replied : activeCampaign?.replies) || 0, total: leads.length || 1, color: "hsl(var(--ai-orange))", icon: MessageSquare },
-                          { label: "Interested", val: (launched ? liveStats.interested : activeCampaign?.interested) || 0, total: leads.length || 1, color: "hsl(var(--ai-green))", icon: Star },
-                          { label: "Meetings", val: (launched ? liveStats.meetings : Math.floor((activeCampaign?.interested || 0) * 0.6)) || 0, total: leads.length || 1, color: "hsl(var(--ai-red) / 0.9)", icon: Calendar },
-                        ].map(({ label, val, total, color, icon: Icon }) => (
-                          <div key={label} className="sdr-card text-center py-3 px-2">
-                            <Icon className="w-4 h-4 mx-auto mb-1.5" style={{ color }} />
-                            <motion.div key={val} initial={{ scale: 1.25, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} className="text-lg font-bold">{val}</motion.div>
-                            <div className="text-[10px] text-muted-foreground mt-0.5">{label}</div>
-                            {total > 0 && <div className="text-[9px]" style={{ color }}>({Math.round((val / total) * 100)}%)</div>}
-                          </div>
-                        ))}
-                      </div>
 
-                      <div className="sdr-card space-y-3">
-                        <div className="text-xs font-semibold">Funnel Progress</div>
-                        {[
-                          { label: "Open Rate", val: (launched ? liveStats.opened : activeCampaign?.opens) || 0, base: (launched ? liveStats.sent : activeCampaign?.sent) || 1, color: "hsl(var(--ai-purple))", target: "45%" },
-                          { label: "Reply Rate", val: (launched ? liveStats.replied : activeCampaign?.replies) || 0, base: (launched ? liveStats.sent : activeCampaign?.sent) || 1, color: "hsl(var(--ai-orange))", target: "12%" },
-                          { label: "Interest Rate", val: (launched ? liveStats.interested : activeCampaign?.interested) || 0, base: (launched ? liveStats.sent : activeCampaign?.sent) || 1, color: "hsl(var(--ai-green))", target: "5%" },
-                          { label: "Meeting Rate", val: (launched ? liveStats.meetings : Math.floor((activeCampaign?.interested || 0) * 0.6)) || 0, base: (launched ? liveStats.sent : activeCampaign?.sent) || 1, color: "hsl(var(--ai-blue))", target: "2.5%" },
-                        ].map(({ label, val, base, color, target }) => {
-                          const pct = Math.round((val / base) * 100);
-                          return (
-                            <div key={label}>
-                              <div className="flex justify-between items-center mb-1">
-                                <span className="text-xs text-muted-foreground">{label}</span>
-                                <div className="flex items-center gap-1.5">
-                                  <span className="text-xs font-bold" style={{ color }}>{pct}%</span>
-                                  <span className="text-[10px] text-muted-foreground">target {target}</span>
-                                </div>
-                              </div>
-                              <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                                <motion.div className="h-full rounded-full" style={{ background: color, width: `${pct}%` }} transition={{ duration: 0.5 }} />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      <div className="pb-2">
-                        <div className="sdr-section-title mb-2">
-                          <Bot className="w-3.5 h-3.5" />
-                          Live Activity Feed
-                        </div>
-                        <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
-                          <AnimatePresence initial={false}>
-                            {activityFeed.map(item => (
-                              <motion.div key={item.id}
-                                initial={{ opacity: 0, x: -12, height: 0 }}
-                                animate={{ opacity: 1, x: 0, height: "auto" }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.25 }}
-                                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs"
-                                style={{ background: "hsl(var(--secondary))" }}
-                              >
-                                <span className="text-sm flex-shrink-0">
-                                  {item.type === "open" ? "📬" : item.type === "reply" ? "💬" : item.type === "interest" ? "⭐" : item.type === "searching" ? "🔍" : item.type === "enriching" ? "🧠" : item.type === "sending" ? "⚡" : "📅"}
-                                </span>
-                                <span className="flex-1">{item.text}</span>
-                                <span className="text-muted-foreground flex-shrink-0 tabular-nums">{item.time}</span>
-                              </motion.div>
-                            ))}
-                          </AnimatePresence>
-                          {(activityFeed.length === 0 && (statsRunning || launched)) && (
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground text-center py-4 justify-center">
-                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              Waiting for activity…
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <div key="quick-stats" className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                      <div className="sdr-card p-3 flex flex-col items-center justify-center text-center">
-                        <div className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider font-semibold">Sent</div>
-                        <div className="text-lg font-bold">{activeCampaign?.sent.toLocaleString()}</div>
-                      </div>
-                      <div className="sdr-card p-3 flex flex-col items-center justify-center text-center">
-                        <div className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider font-semibold">Open Rate</div>
-                        <div className="text-lg font-bold">{activeCampaign && activeCampaign.sent > 0 ? Math.round((activeCampaign.opens / activeCampaign.sent) * 100) : 0}%</div>
-                      </div>
-                      <div className="sdr-card p-3 flex flex-col items-center justify-center text-center">
-                        <div className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider font-semibold">Replies</div>
-                        <div className="text-lg font-bold">{activeCampaign?.replies}</div>
-                      </div>
-                      <div className="sdr-card p-3 flex flex-col items-center justify-center text-center">
-                        <div className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider font-semibold">Interested</div>
-                        <div className="text-lg font-bold">{activeCampaign?.interested}</div>
-                      </div>
-                      <div className="sdr-card p-3 flex flex-col items-center justify-center text-center">
-                        <div className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider font-semibold">Channel</div>
-                        <div className="text-sm font-bold flex items-center gap-1.5 text-[hsl(var(--ai-blue))]">
-                          <Zap className="w-3 h-3" />
-                          {activeCampaign?.channel || "Email"}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </AnimatePresence>
-              )}
-
-              {/* ── Leads Content (Tab 2: leads) ── */}
-              {detailView === "leads" && (
-                <div className="space-y-5">
+              {detailView === "leads" ? (
+                <>
                   <AnimatePresence>
                     {generatingLeads && (
                       <motion.div
@@ -1120,6 +1055,7 @@ export function CampaignPage() {
                           AI-Generated Leads
                           <span className="sdr-badge ml-1" style={{ background: "hsl(var(--badge-ai-bg))", color: "hsl(var(--badge-ai-fg))" }}>{leads.length} leads</span>
                         </div>
+
 
                         {/* Filters */}
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -1196,12 +1132,143 @@ export function CampaignPage() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
-              )}
+                </>
+              ) : detailView === "stats" ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 16 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  className="space-y-6"
+                >
+                  {/* Stats Summary Cards */}
+                  <div className="sdr-section-title">
+                    <Zap className="w-3.5 h-3.5" style={{ color: "hsl(var(--ai-green))" }} />
+                    Live Campaign Metrics
+                    {launched && (
+                      <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
+                        className="text-[10px] rounded-full px-2 py-0.5 font-semibold ml-2" style={{ background: "hsl(var(--badge-done-bg))", color: "hsl(var(--badge-done-fg))" }}>
+                        ● LIVE TRACKING
+                      </motion.span>
+                    )}
+                  </div>
 
-              {detailView === "funnel" && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                    {[
+                      { label: "Sent", val: launched ? liveStats.sent : activeCampaign?.sent || 0, total: leads.length, color: "hsl(var(--ai-blue))", icon: Send },
+                      { label: "Opened", val: launched ? liveStats.opened : activeCampaign?.opens || 0, total: leads.length, color: "hsl(var(--ai-purple))", icon: MailOpen },
+                      { label: "Replied", val: launched ? liveStats.replied : activeCampaign?.replies || 0, total: leads.length, color: "hsl(var(--ai-orange))", icon: MessageSquare },
+                      { label: "Interested", val: launched ? liveStats.interested : activeCampaign?.interested || 0, total: leads.length, color: "hsl(var(--ai-green))", icon: Star },
+                      { label: "Meetings", val: launched ? liveStats.meetings : Math.floor((activeCampaign?.interested || 0) * 0.6), total: leads.length, color: "hsl(var(--ai-red) / 0.9)", icon: Calendar },
+                    ].map(({ label, val, total, color, icon: Icon }) => (
+                      <div key={label} className="sdr-card group relative overflow-hidden transition-all hover:shadow-lg hover:shadow-[hsl(var(--ai-blue)/0.05)] text-center py-5">
+                        <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-20 transition-opacity">
+                          <Icon className="w-12 h-12 -mr-4 -mt-4 rotate-12" style={{ color }} />
+                        </div>
+                        <Icon className="w-5 h-5 mx-auto mb-2.5" style={{ color }} />
+                        <motion.div key={val} initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="text-2xl font-black">{val}</motion.div>
+                        <div className="text-[11px] font-bold text-muted-foreground mt-1 uppercase tracking-tight">{label}</div>
+                        {total > 0 && <div className="text-[10px] font-semibold mt-1" style={{ color }}>{Math.round((val / total) * 100)}% Conversion</div>}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Progress Panel */}
+                    <div className="sdr-card p-5 space-y-5">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="text-sm font-bold flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4 text-[hsl(var(--ai-blue))]" />
+                          Funnel Performance
+                        </div>
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase">Benchmarked</span>
+                      </div>
+                      
+                      {[
+                        { label: "Open Rate", val: launched ? liveStats.opened : activeCampaign?.opens || 0, base: (launched ? liveStats.sent : activeCampaign?.sent) || 1, color: "hsl(var(--ai-purple))", target: "45%" },
+                        { label: "Reply Rate", val: launched ? liveStats.replied : activeCampaign?.replies || 0, base: (launched ? liveStats.sent : activeCampaign?.sent) || 1, color: "hsl(var(--ai-orange))", target: "12%" },
+                        { label: "Interest Rate", val: launched ? liveStats.interested : activeCampaign?.interested || 0, base: (launched ? liveStats.sent : activeCampaign?.sent) || 1, color: "hsl(var(--ai-green))", target: "5%" },
+                        { label: "Meeting Rate", val: launched ? liveStats.meetings : Math.floor((activeCampaign?.interested || 0) * 0.6), base: (launched ? liveStats.sent : activeCampaign?.sent) || 1, color: "hsl(var(--ai-blue))", target: "2.5%" },
+                      ].map(({ label, val, base, color, target }) => {
+                        const pct = Math.round((val / base) * 100);
+                        return (
+                          <div key={label} className="group">
+                            <div className="flex justify-between items-center mb-1.5">
+                              <span className="text-xs font-semibold">{label}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-black" style={{ color }}>{pct}%</span>
+                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-secondary text-muted-foreground font-bold">TARGET {target}</span>
+                              </div>
+                            </div>
+                            <div className="h-2 bg-secondary/50 rounded-full overflow-hidden p-0.5 shadow-inner">
+                              <motion.div 
+                                className="h-full rounded-full relative" 
+                                style={{ background: color, width: `${pct}%` }} 
+                                initial={{ width: 0 }} 
+                                animate={{ width: `${pct}%` }} 
+                                transition={{ duration: 1, ease: "easeOut" }}
+                              >
+                                <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                              </motion.div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Live Feed Panel */}
+                    <div className="sdr-card p-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="text-sm font-bold flex items-center gap-2">
+                          <Activity className="w-4 h-4 text-[hsl(var(--ai-green))]" />
+                          Real-time Activity
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping" />
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase">Streaming</span>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1 custom-scrollbar">
+                        <AnimatePresence initial={false}>
+                          {activityFeed.map(item => (
+                            <motion.div key={item.id}
+                              initial={{ opacity: 0, x: -10, scale: 0.98 }}
+                              animate={{ opacity: 1, x: 0, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.95 }}
+                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:border-border hover:bg-secondary/30 transition-all group"
+                              style={{ background: "hsl(var(--secondary)/0.4)" }}
+                            >
+                              <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center text-sm shadow-sm group-hover:scale-110 transition-transform">
+                                {item.type === "open" ? "📬" : item.type === "reply" ? "💬" : item.type === "interest" ? "⭐" : item.type === "searching" ? "🔍" : item.type === "enriching" ? "🧠" : item.type === "sending" ? "⚡" : "📅"}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-[11px] font-semibold leading-tight">{item.text}</div>
+                                <div className="text-[9px] text-muted-foreground mt-0.5 font-medium">{item.time} ESP Signal Verified</div>
+                              </div>
+                              <div className="w-1.5 h-1.5 rounded-full bg-border group-hover:bg-[hsl(var(--ai-blue))] transition-colors" />
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+                        {activityFeed.length === 0 && (
+                          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground text-center">
+                            <Bot className="w-8 h-8 mb-2 opacity-20" />
+                            <div className="text-xs font-medium">Listening for campaign events…</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
                 <div className="sdr-card border-none bg-transparent p-0">
-                  <LeadFunnelPage campaign={activeCampaign!} />
+                  <LeadFunnelPage 
+                    campaign={activeCampaign ? {
+                      ...activeCampaign,
+                      sent: launched ? liveStats.sent : activeCampaign.sent,
+                      opens: launched ? liveStats.opened : activeCampaign.opens,
+                      replies: launched ? liveStats.replied : activeCampaign.replies,
+                      interested: launched ? liveStats.interested : activeCampaign.interested,
+                    } : undefined} 
+                  />
                 </div>
               )}
 
@@ -1254,7 +1321,7 @@ export function CampaignPage() {
                     </div>
 
                     <button
-                      onClick={handleLaunch}
+                      onClick={() => handleLaunch()}
                       className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98]"
                       style={{ background: "linear-gradient(135deg, hsl(var(--ai-blue)), hsl(var(--ai-purple)))" }}
                     >
@@ -1267,7 +1334,7 @@ export function CampaignPage() {
 
               {/* ── Launching Progress ── */}
               <AnimatePresence>
-                {launching && (
+                {launching && !launched && (
                   <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                     className="sdr-card" style={{ borderColor: "hsl(var(--ai-blue)/0.4)" }}>
                     <div className="flex items-center gap-3 mb-4">
@@ -1289,6 +1356,7 @@ export function CampaignPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
+
 
 
             </motion.div>
