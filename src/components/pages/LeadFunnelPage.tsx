@@ -39,7 +39,7 @@ export default function LeadFunnelPage({ campaign }: LeadFunnelPageProps) {
   let stages = globalFunnelStages;
   let summary = {
     conversion: "14.7%",
-    enrolled: 1892,
+    Meetings: 1892,
     dropoffs: 10955
   };
 
@@ -53,53 +53,54 @@ export default function LeadFunnelPage({ campaign }: LeadFunnelPageProps) {
     const hypotheticalEnrolled = Math.floor(hypotheticalMeetings * 0.4);
 
     stages = [
-      { 
-        label: "LEADS DISCOVERED", 
-        count: sent * 1.5, 
-        converted: null, 
-        dropOff: null, 
-        width: "100%" 
+      {
+        label: "LEADS DISCOVERED",
+        count: sent * 1.5,
+        converted: null,
+        dropOff: null,
+        width: "100%"
       },
-      { 
-        label: "Outreach Sent", 
-        count: sent, 
-        converted: `${Math.round((sent / (sent * 1.5 || 1)) * 100)}% reach`, 
-        dropOff: null, 
-        width: `${(sent / (sent * 1.5 || 1)) * 100}%` 
+      {
+        label: "Outreach Sent",
+        count: sent,
+        converted: `${Math.round((sent / (sent * 1.5 || 1)) * 100)}% reach`,
+        dropOff: null,
+        width: `${(sent / (sent * 1.5 || 1)) * 100}%`
       },
-      { 
-        label: "Opened / Engaged", 
-        count: opened, 
-        converted: `${Math.round((opened / (sent || 1)) * 100)}% open rate`, 
-        dropOff: `${Math.round(((sent - opened) / (sent || 1)) * 100)}% bounce`, 
-        width: `${(opened / (sent * 1.5 || 1)) * 100}%` 
+      {
+        label: "Opened / Engaged",
+        count: opened,
+        converted: `${Math.round((opened / (sent || 1)) * 100)}% open rate`,
+        dropOff: `${Math.round(((sent - opened) / (sent || 1)) * 100)}% bounce`,
+        width: `${(opened / (sent * 1.5 || 1)) * 100}%`
       },
-      { 
-        label: "SDR Replies", 
-        count: replied, 
-        converted: `${Math.round((replied / (opened || 1)) * 100)}% reply rate`, 
-        dropOff: `${Math.round(((opened - replied) / (opened || 1)) * 100)}% no-reply`, 
-        width: `${(replied / (sent * 1.5 || 1)) * 100}%` 
+      {
+        label: "SDR Replies",
+        count: replied,
+        converted: `${Math.round((replied / (opened || 1)) * 100)}% reply rate`,
+        dropOff: `${Math.round(((opened - replied) / (opened || 1)) * 100)}% no-reply`,
+        width: `${(replied / (sent * 1.5 || 1)) * 100}%`
       },
-      { 
-        label: "Interested / Qualified", 
-        count: interested, 
-        converted: `${Math.round((interested / (replied || 1)) * 100)}% interest`, 
-        dropOff: `${Math.round(((replied - interested) / (replied || 1)) * 100)}% rejection`, 
-        width: `${(interested / (sent * 1.5 || 1)) * 100}%` 
+      {
+        label: "Interested / Qualified",
+        count: interested,
+        converted: `${Math.round((interested / (replied || 1)) * 100)}% interest`,
+        dropOff: `${Math.round(((replied - interested) / (replied || 1)) * 100)}% rejection`,
+        width: `${(interested / (sent * 1.5 || 1)) * 100}%`
       },
-      { 
-        label: "Meetings Booked", 
-        count: hypotheticalMeetings, 
-        converted: `${Math.round((hypotheticalMeetings / (interested || 1)) * 100)}% booking`, 
-        dropOff: null, 
-        width: `${(hypotheticalMeetings / (sent * 1.5 || 1)) * 100}%` 
+      {
+        label: "Meetings Booked",
+        count: hypotheticalMeetings,
+        converted: `${Math.round((hypotheticalMeetings / (interested || 1)) * 100)}% booking`,
+        dropOff: null,
+        width: `${(hypotheticalMeetings / (sent * 1.5 || 1)) * 100}%`
       },
     ];
 
     summary = {
-      conversion: `${((hypotheticalEnrolled / (sent || 1)) * 100).toFixed(1)}%`,
-      enrolled: hypotheticalEnrolled,
+      conversion: `${((hypotheticalEnrolled / (sent || 1)) * 100).toFixed(1)
+        }% `,
+      Meetings: hypotheticalEnrolled,
       dropoffs: sent - hypotheticalEnrolled
     };
   }
@@ -113,7 +114,7 @@ export default function LeadFunnelPage({ campaign }: LeadFunnelPageProps) {
         </div>
       )}
 
-      <div className={`rounded-2xl border border-border bg-card p-6 ${campaign ? 'shadow-none border-none bg-transparent px-0' : 'shadow-sm'}`}>
+      <div className={`rounded - 2xl border border - border bg - card p - 6 ${campaign ? 'shadow-none border-none bg-transparent px-0' : 'shadow-sm'} `}>
         {!campaign && <h3 className="text-lg font-semibold text-foreground mb-6">Performance Visualization</h3>}
         <div className="space-y-5">
           {stages.map((stage, i) => (
@@ -147,7 +148,7 @@ export default function LeadFunnelPage({ campaign }: LeadFunnelPageProps) {
             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-1">Conversion</p>
           </div>
           <div className="text-center border-x border-border/50">
-            <p className="text-xl font-bold text-[hsl(var(--ai-blue))]">{summary.enrolled.toLocaleString()}</p>
+            <p className="text-xl font-bold text-[hsl(var(--ai-blue))]">{summary.Meetings.toLocaleString()}</p>
             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-1">Success</p>
           </div>
           <div className="text-center">

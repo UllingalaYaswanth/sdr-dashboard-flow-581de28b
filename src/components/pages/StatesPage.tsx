@@ -6,17 +6,17 @@ import { motion } from "framer-motion";
 import { ChevronRight, Calendar, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
-const b2cFlow: LeadState[] = ["new", "interested", "counseling", "enrolled"];
+const b2cFlow: LeadState[] = ["new", "interested", "counseling", "Enrolled"];
 const b2bFlow: LeadState[] = ["new", "contacted", "qualified", "meeting", "deal"];
 
 const stateLabels: Record<LeadState, string> = {
-  new: "New", interested: "Interested", counseling: "Counseling", enrolled: "Enrolled",
+  new: "New", interested: "Interested", counseling: "Counseling", Enrolled: "Enrolled",
   contacted: "Contacted", qualified: "Qualified", meeting: "Meeting", deal: "Deal",
 };
 
 const stateColors: Record<LeadState, string> = {
   new: "bg-muted-foreground", interested: "bg-[hsl(var(--ai-orange))]", counseling: "bg-[hsl(var(--ai-red))]",
-  enrolled: "bg-[hsl(var(--ai-green))]", contacted: "bg-[hsl(var(--ai-blue))]", qualified: "bg-[hsl(var(--ai-orange))]",
+  Enrolled: "bg-[hsl(var(--ai-green))]", contacted: "bg-[hsl(var(--ai-blue))]", qualified: "bg-[hsl(var(--ai-orange))]",
   meeting: "bg-[hsl(var(--ai-red))]", deal: "bg-[hsl(var(--ai-green))]",
 };
 
@@ -24,7 +24,7 @@ const badgeStyles: Record<string, string> = {
   new: "bg-[hsl(var(--badge-new-bg))] text-[hsl(var(--badge-new-fg))]",
   interested: "bg-[hsl(var(--badge-warm-bg))] text-[hsl(var(--badge-warm-fg))]",
   counseling: "bg-[hsl(var(--badge-hot-bg))] text-[hsl(var(--badge-hot-fg))]",
-  enrolled: "bg-[hsl(var(--badge-done-bg))] text-[hsl(var(--badge-done-fg))]",
+  Enrolled: "bg-[hsl(var(--badge-done-bg))] text-[hsl(var(--badge-done-fg))]",
   contacted: "bg-[hsl(var(--badge-b2b-bg))] text-[hsl(var(--badge-b2b-fg))]",
   qualified: "bg-[hsl(var(--badge-warm-bg))] text-[hsl(var(--badge-warm-fg))]",
   meeting: "bg-[hsl(var(--badge-hot-bg))] text-[hsl(var(--badge-hot-fg))]",

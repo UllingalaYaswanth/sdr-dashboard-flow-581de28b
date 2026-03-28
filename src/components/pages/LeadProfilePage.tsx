@@ -305,10 +305,7 @@ export default function LeadProfilePage({ lead, onBack }: LeadProfilePageProps) 
               ❄️ Cold Lead — Low Priority
             </div>
           )}
-          <button className="px-4 py-2 rounded-xl bg-[hsl(var(--ai-blue))] text-white text-xs font-bold shadow-lg shadow-[hsl(var(--ai-blue)/0.2)] hover:opacity-90 transition-all flex items-center gap-2">
-            <Bot className="w-3.5 h-3.5" />
-            AI Sequence Active
-          </button>
+          
         </div>
       </div>
 

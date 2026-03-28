@@ -37,7 +37,7 @@ export function OverviewPage() {
   const newCount = leads.filter(l => l.status === "new").length;
   const doneCount = leads.filter(l => l.status === "done").length;
   const meetingsCount = leads.filter(l => l.state === "meeting" || l.state === "counseling").length;
-  const converted = leads.filter(l => l.state === "enrolled" || l.state === "deal").length;
+  const converted = leads.filter(l => l.state === "Enrolled" || l.state === "deal").length;
   const convRate = leads.length > 0 ? ((converted / leads.length) * 100).toFixed(1) : "0";
   const b2bCount = leads.filter(l => l.type === "B2B").length;
   const b2cCount = leads.filter(l => l.type === "B2C").length;
@@ -58,8 +58,8 @@ export function OverviewPage() {
   const funnelData = [
     { stage: "Total", count: leads.length },
     { stage: "Contacted", count: leads.filter(l => !["new"].includes(l.state)).length },
-    { stage: "Interested", count: leads.filter(l => ["interested", "counseling", "enrolled", "qualified", "meeting", "deal"].includes(l.state)).length },
-    { stage: "Meeting", count: leads.filter(l => ["meeting", "counseling", "deal", "enrolled"].includes(l.state)).length },
+    { stage: "Interested", count: leads.filter(l => ["interested", "counseling", "Enrolled", "qualified", "meeting", "deal"].includes(l.state)).length },
+    { stage: "Meeting", count: leads.filter(l => ["meeting", "counseling", "deal", "Enrolled"].includes(l.state)).length },
     { stage: "Converted", count: converted },
   ];
 
@@ -77,7 +77,7 @@ export function OverviewPage() {
     { name: "Interested", value: leads.filter(l => l.state === "interested").length, color: "hsl(var(--ai-purple))" },
     { name: "Qualified", value: leads.filter(l => l.state === "qualified").length, color: "hsl(var(--ai-green))" },
     { name: "Meeting", value: leads.filter(l => l.state === "meeting").length, color: "hsl(var(--ai-orange))" },
-    { name: "Enrolled", value: leads.filter(l => l.state === "enrolled" || l.state === "deal").length, color: "hsl(var(--ai-red))" },
+   
   ];
 
   const typeData = [
@@ -152,12 +152,12 @@ export function OverviewPage() {
           </div>
           <div className="mt-4 h-1.5 bg-secondary rounded-full overflow-hidden flex">
             {stateData.map((s, i) => (
-              <div 
-                key={i} 
-                style={{ 
+              <div
+                key={i}
+                style={{
                   width: `${(s.value / leads.length) * 100}%`,
-                  background: s.color 
-                }} 
+                  background: s.color
+                }}
                 className="h-full first:rounded-l-full last:rounded-r-full border-r border-background/20 last:border-0"
               />
             ))}

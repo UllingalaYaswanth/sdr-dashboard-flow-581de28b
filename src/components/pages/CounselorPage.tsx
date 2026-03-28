@@ -12,7 +12,7 @@ export default function CounselorPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={Phone} value="1,776" label="Total Calls" change="+14.2%" />
-        <StatCard icon={Users} value="740" label="Total Enrollments" change="+11.5%" />
+        <StatCard icon={Users} value="740" label="Total Meetings" change="+11.5%" />
         <StatCard icon={TrendingUp} value="41.5%" label="Avg Conversion" change="+3.2%" />
         <StatCard icon={Clock} value="25 min" label="Avg Call Duration" change="-2.1%" changeType="negative" />
       </div>
@@ -28,7 +28,7 @@ export default function CounselorPage() {
               <tr className="bg-muted/20">
                 <th className="px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Counselor</th>
                 <th className="px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-center">Calls</th>
-                <th className="px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-center">Enrollments</th>
+                <th className="px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-center">Meetings</th>
                 <th className="px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-center">Conversion</th>
                 <th className="px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-center">Avg Duration</th>
                 <th className="px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Status</th>
@@ -46,13 +46,13 @@ export default function CounselorPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-muted-foreground">{c.calls}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-muted-foreground">{c.enrollments}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-muted-foreground">{c.Meetings}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
                     <div className="flex flex-col items-center gap-1.5">
                       <span className="text-sm font-bold text-foreground">{c.conversion}%</span>
                       <div className="w-24 h-1.5 rounded-full bg-secondary overflow-hidden">
-                        <div 
-                          className="h-full bg-chart-green rounded-full" 
+                        <div
+                          className="h-full bg-chart-green rounded-full"
                           style={{ width: `${c.conversion}%` }}
                         />
                       </div>
@@ -60,16 +60,14 @@ export default function CounselorPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-muted-foreground">{c.avgDuration}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      c.status === 'online' ? 'bg-chart-green/10 text-chart-green' :
-                      c.status === 'away' ? 'bg-chart-orange/10 text-chart-orange' :
-                      'bg-muted text-muted-foreground'
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                        c.status === 'online' ? 'bg-chart-green' :
-                        c.status === 'away' ? 'bg-chart-orange' :
-                        'bg-muted-foreground'
-                      }`} />
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${c.status === 'online' ? 'bg-chart-green/10 text-chart-green' :
+                        c.status === 'away' ? 'bg-chart-orange/10 text-chart-orange' :
+                          'bg-muted text-muted-foreground'
+                      }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${c.status === 'online' ? 'bg-chart-green' :
+                          c.status === 'away' ? 'bg-chart-orange' :
+                            'bg-muted-foreground'
+                        }`} />
                       {c.status.charAt(0).toUpperCase() + c.status.slice(1)}
                     </span>
                   </td>

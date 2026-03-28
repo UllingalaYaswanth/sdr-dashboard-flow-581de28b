@@ -1,7 +1,7 @@
 export type LeadType = "B2B" | "B2C";
 export type LeadSource = "apollo" | "ads" | "upload";
 export type LeadStatus = "hot" | "warm" | "cold" | "new" | "done";
-export type LeadState = "new" | "interested" | "counseling" | "enrolled" | "contacted" | "qualified" | "meeting" | "deal";
+export type LeadState = "new" | "interested" | "counseling" | "Enrolled" | "contacted" | "qualified" | "meeting" | "deal";
 
 export interface Lead {
   id: string;
@@ -252,11 +252,11 @@ export const sourceBarData = [
 ];
 
 export const counselorPerformance = [
-  { id: 1, name: "Ananya Iyer", calls: 450, enrollments: 200, conversion: 44.4, avgDuration: "24 min", status: "online" },
-  { id: 2, name: "Vikram Singh", calls: 380, enrollments: 165, conversion: 43.4, avgDuration: "26 min", status: "online" },
-  { id: 3, name: "Priya Sharma", calls: 410, enrollments: 160, conversion: 39.0, avgDuration: "25 min", status: "away" },
-  { id: 4, name: "Rahul Mehta", calls: 320, enrollments: 130, conversion: 40.6, avgDuration: "23 min", status: "online" },
-  { id: 5, name: "Neha Joshi", calls: 216, enrollments: 85, conversion: 39.3, avgDuration: "27 min", status: "offline" },
+  { id: 1, name: "Ananya Iyer", calls: 450, Meetings: 200, conversion: 44.4, avgDuration: "24 min", status: "online" },
+  { id: 2, name: "Vikram Singh", calls: 380, Meetings: 165, conversion: 43.4, avgDuration: "26 min", status: "online" },
+  { id: 3, name: "Priya Sharma", calls: 410, Meetings: 160, conversion: 39.0, avgDuration: "25 min", status: "away" },
+  { id: 4, name: "Rahul Mehta", calls: 320, Meetings: 130, conversion: 40.6, avgDuration: "23 min", status: "online" },
+  { id: 5, name: "Neha Joshi", calls: 216, Meetings: 85, conversion: 39.3, avgDuration: "27 min", status: "offline" },
 ];
 
 export const funnelSteps = [

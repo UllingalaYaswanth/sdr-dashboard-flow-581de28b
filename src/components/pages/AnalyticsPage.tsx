@@ -38,7 +38,7 @@ export function AnalyticsPage() {
 
   const b2bLeads = leads.filter(l => l.type === "B2B");
   const b2cLeads = leads.filter(l => l.type === "B2C");
-  const converted = leads.filter(l => l.state === "enrolled" || l.state === "deal");
+  const converted = leads.filter(l => l.state === "Enrolled" || l.state === "deal");
   const hotLeads = leads.filter(l => l.status === "hot");
 
   const bestSource = leads.filter(l => l.source === "ads").length > leads.filter(l => l.source === "apollo").length ? "Ads" : "Apollo";
@@ -69,9 +69,9 @@ export function AnalyticsPage() {
   ];
 
   const sourcePerformance = [
-    { name: "Apollo", leads: leads.filter(l => l.source === "apollo").length, conversion: leads.filter(l => l.source === "apollo" && (l.state === "enrolled" || l.state === "deal")).length },
-    { name: "Ads", leads: leads.filter(l => l.source === "ads").length, conversion: leads.filter(l => l.source === "ads" && (l.state === "enrolled" || l.state === "deal")).length },
-    { name: "Upload", leads: leads.filter(l => l.source === "upload").length, conversion: leads.filter(l => l.source === "upload" && (l.state === "enrolled" || l.state === "deal")).length },
+    { name: "Apollo", leads: leads.filter(l => l.source === "apollo").length, conversion: leads.filter(l => l.source === "apollo" && (l.state === "Enrolled" || l.state === "deal")).length },
+    { name: "Ads", leads: leads.filter(l => l.source === "ads").length, conversion: leads.filter(l => l.source === "ads" && (l.state === "Enrolled" || l.state === "deal")).length },
+    { name: "Upload", leads: leads.filter(l => l.source === "upload").length, conversion: leads.filter(l => l.source === "upload" && (l.state === "Enrolled" || l.state === "deal")).length },
   ];
 
   const trendData = [

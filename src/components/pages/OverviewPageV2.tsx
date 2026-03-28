@@ -3,21 +3,21 @@ import { StatCard } from "@/components/StatCard";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart, Bar, Cell, PieChart, Pie, Tooltip } from "recharts";
 
 const trendData = [
-  { date: "Feb 24", leads: 320, conversations: 280, enrollments: 80 },
-  { date: "Feb 26", leads: 380, conversations: 310, enrollments: 95 },
-  { date: "Feb 28", leads: 350, conversations: 290, enrollments: 88 },
-  { date: "Mar 2", leads: 420, conversations: 350, enrollments: 110 },
-  { date: "Mar 4", leads: 390, conversations: 330, enrollments: 100 },
-  { date: "Mar 6", leads: 450, conversations: 370, enrollments: 120 },
-  { date: "Mar 8", leads: 410, conversations: 340, enrollments: 105 },
-  { date: "Mar 10", leads: 440, conversations: 360, enrollments: 115 },
-  { date: "Mar 12", leads: 400, conversations: 330, enrollments: 98 },
-  { date: "Mar 14", leads: 460, conversations: 380, enrollments: 125 },
-  { date: "Mar 16", leads: 430, conversations: 350, enrollments: 112 },
-  { date: "Mar 18", leads: 470, conversations: 390, enrollments: 130 },
-  { date: "Mar 20", leads: 420, conversations: 345, enrollments: 108 },
-  { date: "Mar 22", leads: 450, conversations: 370, enrollments: 118 },
-  { date: "Mar 25", leads: 380, conversations: 310, enrollments: 90 },
+  { date: "Feb 24", leads: 320, conversations: 280, Meetings: 80 },
+  { date: "Feb 26", leads: 380, conversations: 310, Meetings: 95 },
+  { date: "Feb 28", leads: 350, conversations: 290, Meetings: 88 },
+  { date: "Mar 2", leads: 420, conversations: 350, Meetings: 110 },
+  { date: "Mar 4", leads: 390, conversations: 330, Meetings: 100 },
+  { date: "Mar 6", leads: 450, conversations: 370, Meetings: 120 },
+  { date: "Mar 8", leads: 410, conversations: 340, Meetings: 105 },
+  { date: "Mar 10", leads: 440, conversations: 360, Meetings: 115 },
+  { date: "Mar 12", leads: 400, conversations: 330, Meetings: 98 },
+  { date: "Mar 14", leads: 460, conversations: 380, Meetings: 125 },
+  { date: "Mar 16", leads: 430, conversations: 350, Meetings: 112 },
+  { date: "Mar 18", leads: 470, conversations: 390, Meetings: 130 },
+  { date: "Mar 20", leads: 420, conversations: 345, Meetings: 108 },
+  { date: "Mar 22", leads: 450, conversations: 370, Meetings: 118 },
+  { date: "Mar 25", leads: 380, conversations: 310, Meetings: 90 },
 ];
 
 const channels = [
@@ -27,11 +27,11 @@ const channels = [
 ];
 
 const courseInterestData = [
-  { name: "AI & Machine Learning", leads: 4500, enrollments: 800, percentage: "16%" },
-  { name: "Data Science", leads: 3800, enrollments: 700, percentage: "15%" },
-  { name: "Cybersecurity", leads: 2200, enrollments: 400, percentage: "14%" },
-  { name: "Product Management", leads: 1800, enrollments: 300, percentage: "13%" },
-  { name: "Cloud Computing", leads: 1200, enrollments: 200, percentage: "11.4%" },
+  { name: "AI & Machine Learning", leads: 4500, Meetings: 800, percentage: "16%" },
+  { name: "Data Science", leads: 3800, Meetings: 700, percentage: "15%" },
+  { name: "Cybersecurity", leads: 2200, Meetings: 400, percentage: "14%" },
+  { name: "Product Management", leads: 1800, Meetings: 300, percentage: "13%" },
+  { name: "Cloud Computing", leads: 1200, Meetings: 200, percentage: "11.4%" },
 ];
 
 const leadSourceData = [
@@ -60,7 +60,7 @@ export default function OverviewPageV2() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <StatCard icon={GraduationCap} value="1,892" label="Enrolled" change="+7.8%" />
+        <StatCard icon={GraduationCap} value="1,892" label="Meetings" change="+7.8%" />
         <StatCard icon={TrendingUp} value="14.7%" label="Conversion Rate" change="+2.1%" />
         <StatCard icon={MessageSquare} value="28.4%" label="Response Rate of Leads" change="+4.2%" />
         <StatCard icon={Bot} value="1.2s" label="Avg Response of AI" change="-15%" changeType="negative" />
@@ -75,14 +75,14 @@ export default function OverviewPageV2() {
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} dy={10} />
               <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-              <Tooltip 
-                 contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }}
-                 itemStyle={{ color: 'hsl(var(--foreground))' }}
+              <Tooltip
+                contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }}
+                itemStyle={{ color: 'hsl(var(--foreground))' }}
               />
               <Area type="monotone" dataKey="leads" stroke="hsl(var(--chart-purple))" fill="hsl(var(--chart-purple))" fillOpacity={0.1} strokeWidth={2} />
               <Area type="monotone" dataKey="conversations" stroke="hsl(var(--chart-green))" fill="hsl(var(--chart-green))" fillOpacity={0.1} strokeWidth={2} />
-              <Area type="monotone" dataKey="enrollments" stroke="hsl(var(--chart-cyan))" fill="hsl(var(--chart-cyan))" fillOpacity={0.1} strokeWidth={2} />
-              <Legend verticalAlign="top" height={36}/>
+              <Area type="monotone" dataKey="Meetings" stroke="hsl(var(--chart-cyan))" fill="hsl(var(--chart-cyan))" fillOpacity={0.1} strokeWidth={2} />
+              <Legend verticalAlign="top" height={36} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -110,7 +110,7 @@ export default function OverviewPageV2() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col">
-          <h3 className="text-lg font-semibold text-foreground mb-6">Course Interest Analytics</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-6">Campaign Interest Analytics</h3>
           <div className="flex-1 min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
@@ -133,7 +133,7 @@ export default function OverviewPageV2() {
                   contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }}
                 />
                 <Bar dataKey="leads" fill="hsl(var(--chart-purple))" radius={[0, 4, 4, 0]} barSize={12} name="Leads" />
-                <Bar dataKey="enrollments" fill="hsl(var(--chart-green))" radius={[0, 4, 4, 0]} barSize={12} name="Enrollments" />
+                <Bar dataKey="Meetings" fill="hsl(var(--chart-green))" radius={[0, 4, 4, 0]} barSize={12} name="Meetings" />
                 <Legend iconType="square" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: '20px' }} />
               </BarChart>
             </ResponsiveContainer>

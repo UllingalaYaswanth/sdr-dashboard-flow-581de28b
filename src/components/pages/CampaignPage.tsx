@@ -33,6 +33,9 @@ import {
   MapPin,
   Brain,
   Activity,
+  Upload,
+  Paperclip,
+  FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import LeadProfilePage from "./LeadProfilePage";
@@ -251,6 +254,7 @@ interface WizardInputs {
   industry: string;
   channels: string[];
   budget: string;
+  documentName: string;
 }
 
 const defaultWizard: WizardInputs = {
@@ -267,6 +271,7 @@ const defaultWizard: WizardInputs = {
   industry: "",
   channels: [],
   budget: "",
+  documentName: "",
 };
 
 // ─── Stat Card ───────────────────────────────────────────────────────────────
@@ -404,17 +409,19 @@ function CampaignWizard({ onClose, onCreate, onViewProfile }: { onClose: () => v
                   <div className="h-px flex-1 bg-border" />
                 </div>
 
-                {/* Course name */}
+                {/* Product Name - Full Width */}
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground block mb-1">Course / Product Name</label>
+                  <input
+                    value={inputs.courseName}
+                    onChange={e => set("courseName", e.target.value)}
+                    placeholder="Full-Stack Data Science"
+                    className="w-full bg-secondary border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ai-blue)/0.3)] transition-all"
+                  />
+                </div>
+
+                {/* URL and Document Upload - 2 Columns */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground block mb-1">Course / Product Name</label>
-                    <input
-                      value={inputs.courseName}
-                      onChange={e => set("courseName", e.target.value)}
-                      placeholder="Full-Stack Data Science"
-                      className="w-full bg-secondary border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ai-blue)/0.3)] transition-all"
-                    />
-                  </div>
                   <div>
                     <label className="text-xs font-medium text-muted-foreground block mb-1">Course / Product URL</label>
                     <input
@@ -423,6 +430,36 @@ function CampaignWizard({ onClose, onCreate, onViewProfile }: { onClose: () => v
                       placeholder="https://oyesell.com/course"
                       className="w-full bg-secondary border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ai-blue)/0.3)] transition-all"
                     />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">Upload Documents (Optional)</label>
+                    <div className="relative group/upload">
+                      <input
+                        type="file"
+                        id="doc-upload"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) set("documentName", file.name);
+                        }}
+                      />
+                      <label 
+                        htmlFor="doc-upload" 
+                        className={`flex items-center gap-2 w-full bg-secondary border border-dashed border-border rounded-xl px-3 py-2.5 text-sm cursor-pointer hover:border-[hsl(var(--ai-blue)/0.5)] hover:bg-[hsl(var(--ai-blue)/0.02)] transition-all ${inputs.documentName ? "border-[hsl(var(--ai-blue))] bg-[hsl(var(--ai-blue)/0.05)]" : ""}`}
+                      >
+                        {inputs.documentName ? (
+                          <>
+                            <FileText className="w-3.5 h-3.5 text-[hsl(var(--ai-blue))]" />
+                            <span className="truncate text-[hsl(var(--ai-blue))] font-medium">{inputs.documentName}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-3.5 h-3.5 text-muted-foreground group-hover/upload:text-[hsl(var(--ai-blue))]" />
+                            <span className="text-muted-foreground group-hover/upload:text-[hsl(var(--ai-blue))]">Choose file...</span>
+                          </>
+                        )}
+                      </label>
+                    </div>
                   </div>
                 </div>
 
@@ -733,6 +770,7 @@ export function CampaignPage() {
         `\u2022 ${inputs.guarantee || "Outcome-backed program"}\n` +
         `\u2022 Pricing: ${inputs.price || "Flexible"} \u2014 fully managed delivery\n\n` +
         (inputs.productUrl ? `Learn more: ${inputs.productUrl}\n\n` : "") +
+        (inputs.documentName ? `I've also attached the ${inputs.documentName} for more details.\n\n` : "") +
         `Would you be open to a 15-min call this week to explore if this makes sense for ${l.company}?\n\n` +
         `Looking forward to connecting,\nOyeSell AI`;
     });
@@ -1080,46 +1118,78 @@ export function CampaignPage() {
                           ))}
                         </div>
 
-                        {/* Grouped Lead cards */}
-                        <div className="space-y-6">
-                          {Array.from(new Set(filteredLeads.map(l => l.group))).map((group, groupIndex) => (
-                            <div key={group} className="space-y-2">
-                              <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2 px-1">
-                                <div className="w-1.5 h-1.5 rounded-full" style={{ background: ["hsl(var(--ai-blue))", "hsl(var(--ai-purple))", "hsl(var(--ai-teal))"][groupIndex % 3] }} />
-                                {group}
-                              </div>
-                              {filteredLeads.filter(l => l.group === group).map((lead, i) => (
-                                <motion.div
-                                  key={lead.id}
-                                  initial={{ opacity: 0, y: 6 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: i * 0.04 }}
-                                  onClick={() => setProfileLead(lead)}
-                                  className="sdr-card cursor-pointer hover:shadow-md transition-all border-l-4 border-l-transparent hover:border-l-[hsl(var(--ai-blue))] group"
-                                >
-                                  <div className="flex items-center gap-3 py-1">
-                                    <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-2 flex-wrap">
-                                        <span className="text-sm font-semibold">{lead.name}</span>
-                                        <span className="text-[10px] font-medium rounded-full px-2 py-0.5" style={{ background: statusStyle[lead.status].bg, color: statusStyle[lead.status].fg }}>
-                                          {statusStyle[lead.status].label}
-                                        </span>
-                                        {lead.channel && (
-                                          <span className="text-[10px] font-medium rounded-full px-2 py-0.5" style={{ background: "hsl(var(--badge-done-bg))", color: "hsl(var(--badge-done-fg))" }}>
-                                            ✓ Via {lead.channel}
-                                          </span>
-                                        )}
-                                      </div>
-                                      <div className="text-[11px] text-muted-foreground truncate">{lead.role} · {lead.company} · {lead.location}</div>
-                                    </div>
-                                    <div className="hidden md:flex items-center gap-1 flex-shrink-0">
-                                      <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    </div>
+                        {/* Grouped Lead cards by Status */}
+                        <div className="space-y-8">
+                          {[
+                            { id: "interested", label: "Interested Leads", icon: Star, color: "hsl(var(--ai-green))" },
+                            { id: "meeting", label: "Meetings Booked", icon: Calendar, color: "hsl(var(--ai-blue))" },
+                            { id: "replied", label: "Recent Replies", icon: MessageSquare, color: "hsl(var(--ai-orange))" },
+                            { id: "contacted", label: "Contacted", icon: Send, color: "hsl(var(--ai-purple))" },
+                            { id: "sending", label: "Outreach in Progress", icon: Zap, color: "hsl(var(--ai-blue))" },
+                            { id: "enriching", label: "AI Enrichment", icon: Brain, color: "hsl(var(--ai-teal))" },
+                            { id: "searching", label: "Discovery", icon: Search, color: "hsl(var(--muted-foreground))" },
+                          ].map((group) => {
+                            const groupLeads = filteredLeads.filter(l => l.status === group.id);
+                            if (groupLeads.length === 0) return null;
+
+                            return (
+                              <div key={group.id} className="space-y-3">
+                                <div className="flex items-center gap-2 px-1 mb-1">
+                                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-secondary/50 border border-border/50">
+                                    <group.icon className="w-4 h-4" style={{ color: group.color }} />
                                   </div>
-                                </motion.div>
-                              ))}
-                            </div>
-                          ))}
+                                  <div>
+                                    <div className="text-[11px] font-black uppercase tracking-wider flex items-center gap-2">
+                                      {group.label}
+                                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                                        {groupLeads.length}
+                                      </span>
+                                    </div>
+                                    <div className="text-[9px] text-muted-foreground font-medium">Status: {group.id}</div>
+                                  </div>
+                                  <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent ml-2" />
+                                </div>
+
+                                <div className="space-y-2">
+                                  {groupLeads.map((lead, i) => (
+                                    <motion.div
+                                      key={lead.id}
+                                      initial={{ opacity: 0, y: 6 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ delay: i * 0.04 }}
+                                      onClick={() => setProfileLead(lead)}
+                                      className="sdr-card cursor-pointer hover:shadow-md transition-all border-l-4 group"
+                                      style={{ borderLeftColor: group.color }}
+                                    >
+                                      <div className="flex items-center gap-3 py-1">
+                                        <div className="flex-1 min-w-0">
+                                          <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-sm font-bold">{lead.name}</span>
+                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: statusStyle[lead.status].bg, color: statusStyle[lead.status].fg }}>
+                                              {statusStyle[lead.status].label}
+                                            </span>
+                                            {lead.channel && (
+                                              <span className="text-[10px] font-medium rounded-full px-2 py-0.5" style={{ background: "hsl(var(--badge-done-bg))", color: "hsl(var(--badge-done-fg))" }}>
+                                                ✓ Via {lead.channel}
+                                              </span>
+                                            )}
+                                          </div>
+                                          <div className="text-[11px] text-muted-foreground truncate font-medium">{lead.role} · {lead.company} · {lead.location}</div>
+                                        </div>
+                                        <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+                                          <div className="text-right">
+                                            <div className="text-[10px] text-muted-foreground font-bold uppercase">AI Score</div>
+                                            <div className="text-xs font-black" style={{ color: lead.score >= 80 ? "hsl(var(--ai-green))" : "hsl(var(--ai-orange))" }}>{lead.score}</div>
+                                          </div>
+                                          <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </div>
+                                      </div>
+                                    </motion.div>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
 
                         {/* Interested / replied summary */}
@@ -1159,7 +1229,17 @@ export function CampaignPage() {
                       { label: "Interested", val: launched ? liveStats.interested : activeCampaign?.interested || 0, total: leads.length, color: "hsl(var(--ai-green))", icon: Star },
                       { label: "Meetings", val: launched ? liveStats.meetings : Math.floor((activeCampaign?.interested || 0) * 0.6), total: leads.length, color: "hsl(var(--ai-red) / 0.9)", icon: Calendar },
                     ].map(({ label, val, total, color, icon: Icon }) => (
-                      <div key={label} className="sdr-card group relative overflow-hidden transition-all hover:shadow-lg hover:shadow-[hsl(var(--ai-blue)/0.05)] text-center py-5">
+                      <div 
+                        key={label} 
+                        onClick={() => {
+                          setDetailView("leads");
+                          if (label === "Replied") setStatusFilter("replied");
+                          else if (label === "Interested") setStatusFilter("interested");
+                          else if (label === "Meetings") setStatusFilter("meeting");
+                          else setStatusFilter("all");
+                        }}
+                        className="sdr-card group relative overflow-hidden transition-all hover:shadow-lg hover:shadow-[hsl(var(--ai-blue)/0.1)] text-center py-5 cursor-pointer hover:ring-2 hover:ring-[hsl(var(--ai-blue)/0.3)] active:scale-[0.98] transition-all"
+                      >
                         <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-20 transition-opacity">
                           <Icon className="w-12 h-12 -mr-4 -mt-4 rotate-12" style={{ color }} />
                         </div>
@@ -1190,7 +1270,17 @@ export function CampaignPage() {
                       ].map(({ label, val, base, color, target }) => {
                         const pct = Math.round((val / base) * 100);
                         return (
-                          <div key={label} className="group">
+                          <div 
+                            key={label} 
+                            onClick={() => {
+                              setDetailView("leads");
+                              if (label.includes("Reply")) setStatusFilter("replied");
+                              else if (label.includes("Interest")) setStatusFilter("interested");
+                              else if (label.includes("Meeting")) setStatusFilter("meeting");
+                              else setStatusFilter("all");
+                            }}
+                            className="group cursor-pointer p-1.5 -mx-1.5 rounded-xl hover:bg-secondary/40 transition-all border border-transparent hover:border-border/50"
+                          >
                             <div className="flex justify-between items-center mb-1.5">
                               <span className="text-xs font-semibold">{label}</span>
                               <div className="flex items-center gap-2">
