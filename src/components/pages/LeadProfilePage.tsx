@@ -54,6 +54,165 @@ interface LeadProfilePageProps {
   onBack: () => void;
 }
 
+// Custom Score Breakdown Component
+const ScoreBreakdown = ({ lead }: { lead: CampaignLead }) => (
+  <div className="sdr-card space-y-4">
+    <h4 className="text-sm font-bold flex items-center gap-2">
+      <Sparkles className="w-4 h-4 text-[hsl(var(--ai-blue))]" />
+      Score Generation Analysis
+    </h4>
+    <div className="space-y-4">
+      {[
+        { label: "Profile & ICP Fit", score: lead.fitScore || 85, weight: 35, color: "hsl(var(--ai-blue))", icon: Building2 },
+        { label: "Behavioral Intent", score: lead.intentScore || 78, weight: 40, color: "hsl(var(--ai-orange))", icon: Zap },
+        { label: "Buying Readiness", score: lead.timingScore || 92, weight: 25, color: "hsl(var(--ai-green))", icon: Clock },
+      ].map((item, i) => (
+        <div key={i} className="space-y-2">
+          <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider">
+            <span className="flex items-center gap-2 text-muted-foreground">
+              <item.icon className="w-3.5 h-3.5" style={{ color: item.color }} /> {item.label}
+            </span>
+            <span style={{ color: item.color }}>{item.score}% Match</span>
+          </div>
+          <div className="h-2 w-full bg-secondary rounded-full overflow-hidden border border-border/20 p-[1px]">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${item.score}%` }}
+              transition={{ duration: 1.2, delay: i * 0.1, ease: "circOut" }}
+              className="h-full rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]" 
+              style={{ 
+                backgroundColor: item.color,
+                backgroundImage: `linear-gradient(90deg, transparent, rgba(255,255,255,0.2))`
+              }} 
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+    <div className="pt-3 border-t border-border/50 text-[10px] text-muted-foreground leading-relaxed">
+      <span className="font-bold text-foreground">AI Rationale:</span> Calculated using {lead.company}'s historical relevance, {lead.name}'s seniority ({lead.role}), and recent engagement signals.
+    </div>
+  </div>
+);
+
+// Custom Status Journey Graph Component
+const StatusJourney = ({ lead }: { lead: CampaignLead }) => {
+  const stages = [
+    { id: "searching",  label: "New",        time: "3 Days ago",  icon: "🆕", color: "hsl(var(--ai-blue))",   bgColor: "hsl(var(--ai-blue) / 0.12)"   },
+    { id: "enriching",  label: "Enriched",   time: "2 Days ago",  icon: "🧠", color: "hsl(var(--ai-purple))", bgColor: "hsl(var(--ai-purple) / 0.12)" },
+    { id: "contacted",  label: "Contacted",  time: "Yesterday",   icon: "📨", color: "hsl(var(--ai-orange))", bgColor: "hsl(var(--ai-orange) / 0.12)" },
+    { id: "replied",    label: "Replied",    time: "Today, AM",   icon: "💬", color: "hsl(var(--ai-teal))",   bgColor: "hsl(var(--ai-teal) / 0.12)"   },
+    { id: "interested", label: "Interested", time: "Now",         icon: "⭐", color: "hsl(var(--ai-green))",  bgColor: "hsl(var(--ai-green) / 0.12)"  },
+    { id: "meeting",    label: "Meeting",    time: "Scheduled",   icon: "📅", color: "hsl(36 95% 55%)",       bgColor: "hsl(36 95% 55% / 0.12)"       },
+  ];
+
+  const currentIndex = stages.findIndex(s => s.id === lead.status);
+  const activeIndex = currentIndex === -1 ? 0 : currentIndex;
+
+  return (
+    <div className="border-b border-border/50 pb-8 mb-2">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h4 className="text-sm font-bold flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-[hsl(var(--ai-green))]" />
+          Lead Status Journey
+        </h4>
+        <div className="flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full"
+          style={{ background: stages[activeIndex].bgColor, color: stages[activeIndex].color }}>
+          <span>{stages[activeIndex].icon}</span>
+          {stages[activeIndex].label}
+        </div>
+      </div>
+
+      {/* Stepper Track */}
+      <div className="relative flex items-center">
+        {stages.map((stage, i) => {
+          const isCompleted = i < activeIndex;
+          const isCurrent   = i === activeIndex;
+          const isPending   = i > activeIndex;
+          const isLast      = i === stages.length - 1;
+
+          return (
+            <div key={stage.id} className="flex items-center" style={{ flex: isLast ? "0 0 auto" : 1 }}>
+              {/* Node */}
+              <div className="flex flex-col items-center" style={{ minWidth: 48 }}>
+                {/* Circle */}
+                <div className="relative flex items-center justify-center">
+                  {/* Outer glow ring for current */}
+                  {isCurrent && (
+                    <motion.div
+                      className="absolute rounded-full"
+                      style={{ width: 44, height: 44, border: `2px solid ${stage.color}`, opacity: 0.4 }}
+                      animate={{ scale: [1, 1.5, 1], opacity: [0.4, 0, 0.4] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  )}
+                  <motion.div
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: i * 0.08, duration: 0.35, ease: "backOut" }}
+                    className="relative w-9 h-9 rounded-full flex items-center justify-center text-base shadow-sm border-2 transition-all"
+                    style={{
+                      background:   isCompleted || isCurrent ? stage.bgColor : "hsl(var(--secondary))",
+                      borderColor:  isCompleted ? stage.color : isCurrent ? stage.color : "hsl(var(--border))",
+                      boxShadow:    isCurrent ? `0 0 0 4px ${stage.bgColor}, 0 4px 16px ${stage.bgColor}` : "none",
+                    }}
+                  >
+                    {isCompleted ? (
+                      <CheckCircle2 className="w-4 h-4" style={{ color: stage.color }} />
+                    ) : (
+                      <span className={isPending ? "opacity-30 grayscale" : ""}>{stage.icon}</span>
+                    )}
+                  </motion.div>
+                </div>
+
+                {/* Label + Time */}
+                <motion.div
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.08 }}
+                  className="flex flex-col items-center mt-2 text-center"
+                >
+                  <span
+                    className="text-[10px] font-bold uppercase tracking-wide whitespace-nowrap"
+                    style={{ color: isCurrent ? stage.color : isCompleted ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))", opacity: isPending ? 0.45 : 1 }}
+                  >
+                    {stage.label}
+                  </span>
+                  <span className="text-[9px] mt-0.5 whitespace-nowrap" style={{ color: "hsl(var(--muted-foreground))", opacity: isPending ? 0.35 : 0.75 }}>
+                    {stage.time}
+                  </span>
+                </motion.div>
+              </div>
+
+              {/* Connector bar (skip after last) */}
+              {!isLast && (
+                <div className="flex-1 mx-1 relative" style={{ height: 3, marginBottom: 28 }}>
+                  {/* Background track */}
+                  <div className="w-full h-full rounded-full" style={{ background: "hsl(var(--border))" }} />
+                  {/* Filled portion */}
+                  {(isCompleted || isCurrent) && (
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: isCompleted ? "100%" : isCurrent ? "50%" : "0%" }}
+                      transition={{ duration: 0.6, delay: i * 0.12, ease: "easeOut" }}
+                      className="absolute top-0 left-0 h-full rounded-full"
+                      style={{
+                        background: `linear-gradient(90deg, ${stages[i].color}, ${stages[i + 1]?.color ?? stages[i].color})`,
+                        opacity: isCompleted ? 1 : 0.5,
+                      }}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 export default function LeadProfilePage({ lead, onBack }: LeadProfilePageProps) {
   const firstName = lead.name.split(" ")[0];
 
@@ -108,164 +267,7 @@ export default function LeadProfilePage({ lead, onBack }: LeadProfilePageProps) 
     }
   ];
   
-  // Custom Score Breakdown Component
-  const ScoreBreakdown = () => (
-    <div className="sdr-card space-y-4">
-      <h4 className="text-sm font-bold flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-[hsl(var(--ai-blue))]" />
-        Score Generation Analysis
-      </h4>
-      <div className="space-y-4">
-        {[
-          { label: "Profile & ICP Fit", score: lead.fitScore || 85, weight: 35, color: "hsl(var(--ai-blue))", icon: Building2 },
-          { label: "Behavioral Intent", score: lead.intentScore || 78, weight: 40, color: "hsl(var(--ai-orange))", icon: Zap },
-          { label: "Buying Readiness", score: lead.timingScore || 92, weight: 25, color: "hsl(var(--ai-green))", icon: Clock },
-        ].map((item, i) => (
-          <div key={i} className="space-y-2">
-            <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider">
-              <span className="flex items-center gap-2 text-muted-foreground">
-                <item.icon className="w-3.5 h-3.5" style={{ color: item.color }} /> {item.label}
-              </span>
-              <span style={{ color: item.color }}>{item.score}% Match</span>
-            </div>
-            <div className="h-2 w-full bg-secondary rounded-full overflow-hidden border border-border/20 p-[1px]">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${item.score}%` }}
-                transition={{ duration: 1.2, delay: i * 0.1, ease: "circOut" }}
-                className="h-full rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]" 
-                style={{ 
-                  backgroundColor: item.color,
-                  backgroundImage: `linear-gradient(90deg, transparent, rgba(255,255,255,0.2))`
-                }} 
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="pt-3 border-t border-border/50 text-[10px] text-muted-foreground leading-relaxed">
-        <span className="font-bold text-foreground">AI Rationale:</span> Calculated using {lead.company}'s historical relevance, {lead.name}'s seniority ({lead.role}), and recent engagement signals.
-      </div>
-    </div>
-  );
 
-  // Custom Status Journey Graph Component
-  const StatusJourney = () => {
-    const stages = [
-      { id: "searching",  label: "New",        time: "3 Days ago",  icon: "🆕", color: "hsl(var(--ai-blue))",   bgColor: "hsl(var(--ai-blue) / 0.12)"   },
-      { id: "enriching",  label: "Enriched",   time: "2 Days ago",  icon: "🧠", color: "hsl(var(--ai-purple))", bgColor: "hsl(var(--ai-purple) / 0.12)" },
-      { id: "contacted",  label: "Contacted",  time: "Yesterday",   icon: "📨", color: "hsl(var(--ai-orange))", bgColor: "hsl(var(--ai-orange) / 0.12)" },
-      { id: "replied",    label: "Replied",    time: "Today, AM",   icon: "💬", color: "hsl(var(--ai-teal))",   bgColor: "hsl(var(--ai-teal) / 0.12)"   },
-      { id: "interested", label: "Interested", time: "Now",         icon: "⭐", color: "hsl(var(--ai-green))",  bgColor: "hsl(var(--ai-green) / 0.12)"  },
-      { id: "meeting",    label: "Meeting",    time: "Scheduled",   icon: "📅", color: "hsl(36 95% 55%)",       bgColor: "hsl(36 95% 55% / 0.12)"       },
-    ];
-
-    const currentIndex = stages.findIndex(s => s.id === lead.status);
-    const activeIndex = currentIndex === -1 ? 0 : currentIndex;
-
-    return (
-      <div className="border-b border-border/50 pb-8 mb-2">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h4 className="text-sm font-bold flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-[hsl(var(--ai-green))]" />
-            Lead Status Journey
-          </h4>
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full"
-            style={{ background: stages[activeIndex].bgColor, color: stages[activeIndex].color }}>
-            <span>{stages[activeIndex].icon}</span>
-            {stages[activeIndex].label}
-          </div>
-        </div>
-
-        {/* Stepper Track */}
-        <div className="relative flex items-center">
-          {stages.map((stage, i) => {
-            const isCompleted = i < activeIndex;
-            const isCurrent   = i === activeIndex;
-            const isPending   = i > activeIndex;
-            const isLast      = i === stages.length - 1;
-
-            return (
-              <div key={stage.id} className="flex items-center" style={{ flex: isLast ? "0 0 auto" : 1 }}>
-                {/* Node */}
-                <div className="flex flex-col items-center" style={{ minWidth: 48 }}>
-                  {/* Circle */}
-                  <div className="relative flex items-center justify-center">
-                    {/* Outer glow ring for current */}
-                    {isCurrent && (
-                      <motion.div
-                        className="absolute rounded-full"
-                        style={{ width: 44, height: 44, border: `2px solid ${stage.color}`, opacity: 0.4 }}
-                        animate={{ scale: [1, 1.5, 1], opacity: [0.4, 0, 0.4] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                      />
-                    )}
-                    <motion.div
-                      initial={{ scale: 0.6, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: i * 0.08, duration: 0.35, ease: "backOut" }}
-                      className="relative w-9 h-9 rounded-full flex items-center justify-center text-base shadow-sm border-2 transition-all"
-                      style={{
-                        background:   isCompleted || isCurrent ? stage.bgColor : "hsl(var(--secondary))",
-                        borderColor:  isCompleted ? stage.color : isCurrent ? stage.color : "hsl(var(--border))",
-                        boxShadow:    isCurrent ? `0 0 0 4px ${stage.bgColor}, 0 4px 16px ${stage.bgColor}` : "none",
-                      }}
-                    >
-                      {isCompleted ? (
-                        <CheckCircle2 className="w-4 h-4" style={{ color: stage.color }} />
-                      ) : (
-                        <span className={isPending ? "opacity-30 grayscale" : ""}>{stage.icon}</span>
-                      )}
-                    </motion.div>
-                  </div>
-
-                  {/* Label + Time */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + i * 0.08 }}
-                    className="flex flex-col items-center mt-2 text-center"
-                  >
-                    <span
-                      className="text-[10px] font-bold uppercase tracking-wide whitespace-nowrap"
-                      style={{ color: isCurrent ? stage.color : isCompleted ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))", opacity: isPending ? 0.45 : 1 }}
-                    >
-                      {stage.label}
-                    </span>
-                    <span className="text-[9px] mt-0.5 whitespace-nowrap" style={{ color: "hsl(var(--muted-foreground))", opacity: isPending ? 0.35 : 0.75 }}>
-                      {stage.time}
-                    </span>
-                  </motion.div>
-                </div>
-
-                {/* Connector bar (skip after last) */}
-                {!isLast && (
-                  <div className="flex-1 mx-1 relative" style={{ height: 3, marginBottom: 28 }}>
-                    {/* Background track */}
-                    <div className="w-full h-full rounded-full" style={{ background: "hsl(var(--border))" }} />
-                    {/* Filled portion */}
-                    {(isCompleted || isCurrent) && (
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: isCompleted ? "100%" : isCurrent ? "50%" : "0%" }}
-                        transition={{ duration: 0.6, delay: i * 0.12, ease: "easeOut" }}
-                        className="absolute top-0 left-0 h-full rounded-full"
-                        style={{
-                          background: `linear-gradient(90deg, ${stages[i].color}, ${stages[i + 1]?.color ?? stages[i].color})`,
-                          opacity: isCompleted ? 1 : 0.5,
-                        }}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <motion.div 
@@ -326,7 +328,7 @@ export default function LeadProfilePage({ lead, onBack }: LeadProfilePageProps) 
 
       {/* Main Score Breakdown at the Top */}
       <div className="grid grid-cols-1">
-        <ScoreBreakdown />
+        <ScoreBreakdown lead={lead} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -412,7 +414,7 @@ export default function LeadProfilePage({ lead, onBack }: LeadProfilePageProps) 
             </div>
 
             <div className="mb-10 px-2">
-              <StatusJourney />
+              <StatusJourney lead={lead} />
             </div>
 
             <div className="relative space-y-10 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-[1px] before:bg-border/40">
