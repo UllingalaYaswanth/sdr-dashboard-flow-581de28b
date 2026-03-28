@@ -283,7 +283,6 @@ export const navItems: { key: NavPage; label: string; section: string; color: st
   { key: "states", label: "Lead Journey", section: "Outreach", color: "bg-[hsl(var(--ai-purple))]" },
   { key: "analytics", label: "Analytics Hub", section: "Intelligence", color: "bg-[hsl(var(--ai-blue-dark))]" },
   */
-  { key: "funnel", label: "Lead Funnel", section: "Intelligence", color: "bg-[hsl(var(--ai-purple))]" },
   { key: "counselor", label: "Counselor Perf", section: "Intelligence", color: "bg-[hsl(var(--ai-orange))]" },
   /*
   { key: "optimize", label: "Self-Learning Loop", section: "Intelligence", color: "bg-[hsl(var(--ai-green))]" },

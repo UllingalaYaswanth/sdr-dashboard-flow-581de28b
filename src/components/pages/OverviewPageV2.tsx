@@ -1,6 +1,8 @@
 import { Users, UserPlus, MessageSquare, UserCheck, Phone, GraduationCap, TrendingUp, Bot } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart, Bar, Cell, PieChart, Pie, Tooltip } from "recharts";
+import LeadFunnelPage from "./LeadFunnelPage";
+
 
 const trendData = [
   { date: "Feb 24", leads: 320, conversations: 280, Meetings: 80 },
@@ -107,6 +109,8 @@ export default function OverviewPageV2() {
           </div>
         </div>
       </div>
+
+      <LeadFunnelPage hideTitle={true} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col">

@@ -19,6 +19,7 @@ interface Campaign {
 
 interface LeadFunnelPageProps {
   campaign?: Campaign;
+  hideTitle?: boolean;
 }
 
 const globalFunnelStages: FunnelStage[] = [
@@ -35,7 +36,7 @@ const colors = [
   "hsl(263, 50%, 50%)", "hsl(200, 70%, 50%)", "hsl(160, 70%, 48%)", "hsl(36, 95%, 55%)",
 ];
 
-export default function LeadFunnelPage({ campaign }: LeadFunnelPageProps) {
+export default function LeadFunnelPage({ campaign, hideTitle = false }: LeadFunnelPageProps) {
   let stages = globalFunnelStages;
   let summary = {
     conversion: "14.7%",
@@ -107,53 +108,51 @@ export default function LeadFunnelPage({ campaign }: LeadFunnelPageProps) {
 
   return (
     <div className="space-y-6">
-      {!campaign && (
+      {!campaign && !hideTitle && (
         <div>
           <h1 className="text-2xl font-bold text-foreground">Global Lead Pipeline Funnel</h1>
           <p className="text-sm text-muted-foreground">Aggregate performance metrics across all AI SDR activity</p>
         </div>
       )}
 
-      <div className={`rounded - 2xl border border - border bg - card p - 6 ${campaign ? 'shadow-none border-none bg-transparent px-0' : 'shadow-sm'} `}>
+      <div className={`rounded-2xl border border-border bg-card p-6 ${campaign ? 'shadow-none border-none bg-transparent px-0' : 'shadow-sm'}`}>
         {!campaign && <h3 className="text-lg font-semibold text-foreground mb-6">Performance Visualization</h3>}
-        <div className="space-y-5">
+        <div className="space-y-3">
           {stages.map((stage, i) => (
             <div key={stage.label} className="group">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs font-bold text-foreground uppercase tracking-tight">{stage.label}</span>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-bold text-foreground/70 uppercase tracking-tight">{stage.label}</span>
                 <div className="flex gap-3 text-[10px] font-medium">
                   <span className="text-muted-foreground">{stage.count.toLocaleString()} leads</span>
                   {stage.converted && <span className="text-[hsl(var(--ai-green))]">{stage.converted}</span>}
                   {stage.dropOff && <span className="text-[hsl(var(--ai-red))] opacity-70 group-hover:opacity-100 transition-opacity">{stage.dropOff}</span>}
                 </div>
               </div>
-              <div className="relative h-9 w-full rounded-xl bg-secondary/50 overflow-hidden border border-border/10">
+              <div className="relative h-2.5 w-full rounded-full bg-secondary/30 overflow-hidden border border-border/5">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: stage.width }}
                   transition={{ duration: 1, ease: "easeOut" }}
-                  className="h-full rounded-xl flex items-center justify-end pr-4 text-[10px] font-bold text-white shadow-lg"
+                  className="h-full rounded-full shadow-lg"
                   style={{ backgroundColor: colors[i % colors.length] }}
-                >
-                  <span className="drop-shadow-sm">{Math.round(stage.count).toLocaleString()} leads</span>
-                </motion.div>
+                />
               </div>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mt-10 rounded-2xl border border-border/50 p-6 bg-secondary/20 backdrop-blur-sm">
+        <div className="grid grid-cols-3 gap-4 mt-6 rounded-xl border border-border/50 p-4 bg-secondary/10 backdrop-blur-sm">
           <div className="text-center">
-            <p className="text-xl font-bold text-[hsl(var(--ai-green))]">{summary.conversion}</p>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-1">Conversion</p>
+            <p className="text-lg font-bold text-[hsl(var(--ai-green))]">{summary.conversion}</p>
+            <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Conversion</p>
           </div>
           <div className="text-center border-x border-border/50">
-            <p className="text-xl font-bold text-[hsl(var(--ai-blue))]">{summary.Meetings.toLocaleString()}</p>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-1">Success</p>
+            <p className="text-lg font-bold text-[hsl(var(--ai-blue))]">{summary.Meetings.toLocaleString()}</p>
+            <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Success</p>
           </div>
           <div className="text-center">
-            <p className="text-xl font-bold text-[hsl(var(--ai-red))] opacity-80">{summary.dropoffs.toLocaleString()}</p>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-1">Churned</p>
+            <p className="text-lg font-bold text-[hsl(var(--ai-red))] opacity-80">{summary.dropoffs.toLocaleString()}</p>
+            <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Churned</p>
           </div>
         </div>
       </div>
